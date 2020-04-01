@@ -1,0 +1,6 @@
+W pliku literatura.txt wrzucajcie pomysły, inspiracje, rzeczy, które uważacie za pomocne w naszym projekcie w postaci
+
+Tytuł
+Link
+
+Krótki opis, o czym jest, co uważacie za pomocne itp.
