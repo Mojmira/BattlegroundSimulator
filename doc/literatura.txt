@@ -5,3 +5,10 @@ https://www.youtube.com/watch?v=OBeFUandEO4&list=PLWbAUhvm4h-MntfKhK5SvvtBx5lD8i
 https://towardsdatascience.com/introduction-to-mesa-agent-based-modeling-in-python-bcb0596e1c9a
 
 Jest tutaj wyjaśnione jak zainstalować wszystko i uruchomić program demonstracyjny. Myślę, że jeśli przeanalizujemy kod i poszukamy dokumentacji, będziemy mogli użyć tego do naszej symulacji.
+
+3.Gościu, który pisał Age of Empires opowiada o poruszaniu się jednostek
+https://www.gamasutra.com/view/feature/3313/coordinated_unit_movement.php?print=1
+https://www.gamasutra.com/view/feature/3314/coordinated_unit_movement.php?print=1
+
+4.Game AI Pro 360: Guide to Movement and Pathfinding (z google books)
+https://bit.ly/2UMqEjt
