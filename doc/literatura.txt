@@ -1,2 +1,7 @@
 1.Gameplay który całkiem nieźle wyjasnia mechaniki gry
 https://www.youtube.com/watch?v=OBeFUandEO4&list=PLWbAUhvm4h-MntfKhK5SvvtBx5lD8iv7V ##Link do playlisty
+
+2.Framework w pythonie do systemów agentowych
+https://towardsdatascience.com/introduction-to-mesa-agent-based-modeling-in-python-bcb0596e1c9a
+
+Jest tutaj wyjaśnione jak zainstalować wszystko i uruchomić program demonstracyjny. Myślę, że jeśli przeanalizujemy kod i poszukamy dokumentacji, będziemy mogli użyć tego do naszej symulacji.
