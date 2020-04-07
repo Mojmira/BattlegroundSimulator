@@ -15,7 +15,14 @@ Jest tutaj wyjaśnione jak zainstalować wszystko i uruchomić program demonstra
 https://www.gamasutra.com/view/feature/3313/coordinated_unit_movement.php?print=1
 https://www.gamasutra.com/view/feature/3314/coordinated_unit_movement.php?print=1
 
-Jednym z problemów stworzenia dobrej symulacji ruchu jednostek jest odpowiednie dobranie mocy jaką komputer musi na nią poświęcić a dokładnością i inteligencją ruchu tych jednostek. Przyspieszanie, zwalnianie i obracanie się znacznie komplikują i spowalniają obliczenia przez co należy to zakodować z jak najwięszką optymalnością. W punkcie "Listing 1" jest przedsatwiony algorytm tzw. "pathfinding'u" dla jednej jednostki. Przy pisaniu kodu opisującego ruch wielu jednostek jednocześnie należy zwrócic uwagę m.in. na znaleźeniu optymalnej trasy, przewidywaniu kolejnej pozycji każej jednostki, system kolizji, różną szybkość różnych jednostek.  
+Jednym z problemów stworzenia dobrej symulacji ruchu jednostek jest odpowiednie 
+dobranie mocy jaką komputer musi na nią poświęcić a dokładnością i inteligencją 
+ruchu tych jednostek. Przyspieszanie, zwalnianie i obracanie się znacznie komplikują 
+i spowalniają obliczenia przez co należy to zakodować z jak najwięszką optymalnością. 
+W punkcie "Listing 1" jest przedsatwiony algorytm tzw. "pathfinding'u" dla jednej jednostki. 
+Przy pisaniu kodu opisującego ruch wielu jednostek jednocześnie należy zwrócic uwagę m.in. 
+na znaleźeniu optymalnej trasy, przewidywaniu kolejnej pozycji każej jednostki, system kolizji, 
+różną szybkość różnych jednostek.  
 
 4.Game AI Pro 360: Guide to Movement and Pathfinding (z google books)
 https://bit.ly/2UMqEjt
