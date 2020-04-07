@@ -3,10 +3,11 @@ https://www.youtube.com/watch?v=OBeFUandEO4&list=PLWbAUhvm4h-MntfKhK5SvvtBx5lD8i
 
 2.Framework w pythonie do systemów agentowych
 https://www.youtube.com/watch?v=xaAzALyP6Ss
-Krótka prezentacja działania, polecam odpalić na 1.5 prędkości
+Krótka prezentacja działania, polecam odpalić na 1.5 prędkości. Najciekawsze jest od ok. 3 minuty, gdzie działa model odpalony w przeglądarce.
 
 https://mesa.readthedocs.io/en/master/tutorials/intro_tutorial.html
-Oficialny tutorial, warto przeczytać
+Oficialny tutorial, wszyscy powinniśmy go przeczytać i przeanalizować (być może nawet nawet napisać taką prostą symulację jak jest w przykładzie). Pokazuje założenia i działanie tej biblioteki, jak stworzyć model symulacji oraz klasę dla agentów, a także najważniejszą metodę - step(), która będzie uruchamiana za każdym "tickiem" naszej symulacji oraz w jaki sposób ją uruchamiać.
+Ponadto można tam się dowiedzieć jak zbierać dane, rysować wykresy, a także przedstawić przestrzeń i naszych agentów (można ich umieszczać w komórkach siatki albo pozwolić im poruszać się dowolnie)
 
 https://towardsdatascience.com/introduction-to-mesa-agent-based-modeling-in-python-bcb0596e1c9a
 Jest tutaj wyjaśnione jak zainstalować wszystko i uruchomić program demonstracyjny. Myślę, że jeśli przeanalizujemy kod i poszukamy dokumentacji, będziemy mogli użyć tego do naszej symulacji.
