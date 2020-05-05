@@ -6,6 +6,7 @@ from mesa.time import RandomActivation
 
 class Battlefield(Model):
     def __init__(self, army_1, army_2, width, height):
+        super().__init__()
         self.numerical_army_1 = army_1
         self.numerical_army_2 = army_2
         self.grid = MultiGrid(width, height, False)
@@ -28,11 +29,11 @@ class Battlefield(Model):
         self.schedule.step()
 
 
-class Infantry(Agent):
+class MainAgent(Agent):
     def __init__(self, id, model):
         super().__init__(id, model)
-        self.health = 10
-        self.attack = 3
+        self.health = 0
+        self.attack = 0
 
     def move(self):
         # bardzo uproszczone tak tylko żeby na siebie szli
@@ -45,12 +46,25 @@ class Infantry(Agent):
     def fight(self):
         oponents = self.model.grid.get_cell_list_contents([self.pos])
         if len(oponents) > 1:
+
+            #bije siebie też XDDD
             other = self.random.choice(oponents)
             other.health = other.health - self.attack
             self.health = self.health - other.attack
 
     def step(self):
-        if (self.pos[1] != 1):
+        if self.pos[1] != 1:
+            self.move()
+        else:
+            self.fight()
+
+
+class Infantry(MainAgent):
+    def __init__(self, id, model):
+        super().__init__(id, model)
+
+    def step(self):
+        if self.pos[1] != 1:
             self.move()
         else:
             self.fight()
