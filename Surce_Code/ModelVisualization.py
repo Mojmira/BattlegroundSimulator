@@ -5,13 +5,13 @@ from Model import Battlefield
 
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
-                 "Color": "red",
+                 "Color": agent.color,
                  "Filled": "true",
                  "Layer": 0,
                  "r": 0.5}
     return portrayal
 
-grid = CanvasGrid(agent_portrayal, 10, 10, 200, 200)
+grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 server = ModularServer(Battlefield,
                        [grid],
                        "Draw Model",

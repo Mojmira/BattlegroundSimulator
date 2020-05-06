@@ -21,6 +21,8 @@ class Battlefield(Model):
 
             x = self.random.randint(0, width - 1)
             y = self.random.randint(0, height - 1)
+            if i%2:
+                a.color="blue"
 
             self.grid.place_agent(a, (x, y))
 
@@ -34,6 +36,7 @@ class MainAgent(Agent):
         self.health = 0
         self.attack = 0
         self.model = model
+        self.color = "red"
 
     def scout(self):
         field = self.model.grid.get_neighbors(
