@@ -2,9 +2,10 @@ from Model import *
 
 if __name__ == '__main__':
 
-    battle = Battlefield(2, 20, 20)
+    battle = Battlefield(1, 5, 5)
     for i in range(20):
         battle.step()
+
     for agent in battle.schedule.agents:
         print(agent.scout())
 

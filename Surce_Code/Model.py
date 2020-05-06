@@ -10,7 +10,7 @@ class Battlefield(Model):
     def __init__(self, army_1, width, height):
         super().__init__()
         self.numerical_army_1 = army_1
-        self.grid = MultiGrid(width, height, True)
+        self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
         self.running = True
 
@@ -44,19 +44,27 @@ class MainAgent(Agent):
         )
         return field
 
+    def nearest9fields(self):
+        fields_around = self.model.grid.get_neighborhood(
+            self.pos,
+            True,
+            True,
+            1
+        )
+        return fields_around
+
     def move(self):
 
         others = self.scout()
 
         if len(others) < 1:
             print("I'm mooving hehe")
-            fields_around = self.model.grid.get_neighborhood(
-                self.pos,
-                True,
-                False,
-                2
-            )
-            self.model.grid.move_agent(self, self.random.choice(fields_around))
+
+            self.model.grid.move_agent(
+                self,
+                self.random.choice(
+                    self.nearest9fields()
+                ))
         else:
             print("I'm in touch with somebody ")
             new_pos = [0, 0]
@@ -79,23 +87,25 @@ class MainAgent(Agent):
             self.model.grid.move_agent(self, new_pos_tup)
 
     def fight(self):
-        oponents = self.model.grid.get_cell_list_contents([self.pos])
-        if len(oponents) > 1:
-            # bije siebie też XDDD
-            other = self.random.choice(oponents)
+        opponents = self.model.grid.get_neighbors(
+            self.pos,
+            True,
+            False,
+            1
+        )
+        if len(opponents) > 0:
+            print("F")
+            other = self.random.choice(opponents)
             other.health = other.health - self.attack
             self.health = self.health - other.attack
 
     def step(self):
         self.move()
+        self.fight()
 
 
 class Infantry(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
 
-    def step(self):
-        if self.pos[1] != 1:
-            self.move()
-        else:
-            self.fight()
+
