@@ -21,8 +21,8 @@ class Battlefield(Model):
 
             x = self.random.randint(0, width - 1)
             y = self.random.randint(0, height - 1)
-            if i%2:
-                a.color="blue"
+            if i % 2:
+                a.color = "blue"
 
             self.grid.place_agent(a, (x, y))
 
@@ -72,16 +72,16 @@ class MainAgent(Agent):
             print("I'm in touch with somebody ")
             new_pos = [0, 0]
 
-            if others[0].pos[0]>self.pos[0]:
-                new_pos[0] = self.pos[0]+1
-            elif others[0].pos[0]<self.pos[0]:
+            if others[0].pos[0] > self.pos[0]:
+                new_pos[0] = self.pos[0] + 1
+            elif others[0].pos[0] < self.pos[0]:
                 new_pos[0] = self.pos[0] - 1
             else:
                 pass
 
-            if others[0].pos[1]>self.pos[1]:
+            if others[0].pos[1] > self.pos[1]:
                 new_pos[1] = self.pos[1] + 1
-            elif others[0].pos[1]<self.pos[1]:
+            elif others[0].pos[1] < self.pos[1]:
                 new_pos[1] = self.pos[1] - 1
             else:
                 pass
@@ -110,5 +110,3 @@ class MainAgent(Agent):
 class Infantry(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
-
-

@@ -3,6 +3,7 @@ from mesa.visualization.ModularVisualization import ModularServer
 
 from Model import Battlefield
 
+
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
                  "Color": agent.color,
@@ -10,6 +11,7 @@ def agent_portrayal(agent):
                  "Layer": 0,
                  "r": 0.5}
     return portrayal
+
 
 grid = CanvasGrid(agent_portrayal, 10, 10, 500, 500)
 server = ModularServer(Battlefield,
