@@ -27,38 +27,56 @@ class Battlefield(Model):
             self.grid.place_agent(a, (x, y))
 
     def step(self):
+        if self.schedule.agents.count(None) > 1:
+            self.schedule.agents.remove(None)
+        print(self.schedule.agents)
         self.schedule.step()
 
 
 class MainAgent(Agent):
     def __init__(self, id, model):
         super().__init__(id, model)
-        self.health = 0
-        self.attack = 0
+        self.health = 100
+        self.attack = 10
         self.model = model
         self.color = "red"
 
-    def scout(self):
+    def get_dmg(self):
+        return self.attack
+
+    def get_hp(self):
+        return self.health
+
+    def get_color(self):
+        return self.color
+
+    def set_hp(self, hp):
+        self.health = hp
+
+    def set_color(self, color):
+        self.color = color
+
+    def scout(self, n):
         field = self.model.grid.get_neighbors(
             self.pos,  # Pozycja jednostki
             True,  # True=Moore neighborhood False=Von Neumann neighborhood
             False,  # Srodek
-            7  # Promien
+            n  # Promien
         )
         return field
 
-    def nearest9fields(self):
+    def nearest_fields(self, n):
         fields_around = self.model.grid.get_neighborhood(
             self.pos,
             True,
             False,
-            1
+            n
         )
         return fields_around
 
     def move(self):
 
-        others = self.scout()
+        others = self.scout(7)
 
         if len(others) < 1:
             print("I'm mooving hehe")
@@ -66,7 +84,7 @@ class MainAgent(Agent):
             self.model.grid.move_agent(
                 self,
                 self.random.choice(
-                    self.nearest9fields()
+                    self.nearest_fields(1)
                 ))
         else:
             print("I'm in touch with somebody ")
@@ -90,35 +108,39 @@ class MainAgent(Agent):
             self.model.grid.move_agent(self, new_pos_tup)
 
     def attack_opponent(self):
-        opponents = self.model.grid.get_neighbors(
-            self.pos,
-            True,
-            False,
-            1
-        )
+        opponents = self.nearest_fields(1)
         if len(opponents) > 0:
-            print("F")
             other = self.random.choice(opponents)
-            other.health = other.health - self.attack
-            self.health = self.health - other.attack
+            other.hurt_me(self.get_dmg())
+
+    def hurt_me(self, dmg):
+        hp = self.get_hp()
+        hp -= dmg
+        if self.is_dead(hp):
+            pass
+        else:
+            self.set_hp(hp)
 
     def step(self):
-        neighbors = self.model.grid.get_neighbors(
-            self.pos,
-            True,
-            False,
-            1
-        )
+        neighbors = self.scout(1)
         if len(neighbors) < 1:
             self.move()
         self.attack_opponent()
+
+    def is_dead(self, hp):
+        if hp <= 0:
+            self.model.grid.remove_agent(self)
+            print("RIP")
+            return True
+        else:
+            return False
 
 
 class Infantry(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
 
-    #Na nich się bazowałem robiąc główną klasę więc nie ma co na razie zmieniać XD
+    # Na nich się bazowałem robiąc główną klasę więc nie ma co na razie zmieniać XD
 
 
 class Cavalry(MainAgent):
@@ -126,14 +148,8 @@ class Cavalry(MainAgent):
         super().__init__(id, model)
 
     def move(self):
-        possible_fields = self.model.grid.get_neighborhood(
-            self.pos,
-            True,
-            False,
-            2
-        )
-
-        others = self.scout()
+        possible_fields = self.nearest_fields(2)
+        others = self.scout(7)
 
         if len(others) < 1:
             print("I'm mooving hehe")
@@ -165,30 +181,18 @@ class Cavalry(MainAgent):
             self.model.grid.move_agent(self, new_pos_tup)
 
 
-
 class Archers(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
 
     def attack_opponent(self):
-        opponents = self.model.grid.get_neighbors(
-            self.pos,
-            True,
-            False,
-            2
-        )
+        opponents = self.scout(2)
         if len(opponents) > 0:
-            print("Schooting")
             other = self.random.choice(opponents)
-            other.health = other.health - self.attack
+            other.hurt_me(self.get_dmg())
 
     def step(self):
-        neighbors = self.model.grid.get_neighbors(
-            self.pos,
-            True,
-            False,
-            2
-        )
+        neighbors = self.scout(2)
         if len(neighbors) < 1:
             self.move()
         self.attack_opponent()
