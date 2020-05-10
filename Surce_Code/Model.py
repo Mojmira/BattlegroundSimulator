@@ -16,7 +16,7 @@ class Battlefield(Model):
 
         i = 0
         for i in range(self.numerical_army_1):
-            a = Infantry(i, self)
+            a = Archers(i, self)
             self.schedule.add(a)
 
             x = self.random.randint(0, width - 1)
@@ -51,7 +51,7 @@ class MainAgent(Agent):
         fields_around = self.model.grid.get_neighborhood(
             self.pos,
             True,
-            True,
+            False,
             1
         )
         return fields_around
@@ -89,7 +89,7 @@ class MainAgent(Agent):
             new_pos_tup = (new_pos[0], new_pos[1])
             self.model.grid.move_agent(self, new_pos_tup)
 
-    def fight(self):
+    def attack_opponent(self):
         opponents = self.model.grid.get_neighbors(
             self.pos,
             True,
@@ -103,10 +103,92 @@ class MainAgent(Agent):
             self.health = self.health - other.attack
 
     def step(self):
-        self.move()
-        self.fight()
+        neighbors = self.model.grid.get_neighbors(
+            self.pos,
+            True,
+            False,
+            1
+        )
+        if len(neighbors) < 1:
+            self.move()
+        self.attack_opponent()
 
 
 class Infantry(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
+
+    #Na nich się bazowałem robiąc główną klasę więc nie ma co na razie zmieniać XD
+
+
+class Cavalry(MainAgent):
+    def __init__(self, id, model):
+        super().__init__(id, model)
+
+    def move(self):
+        possible_fields = self.model.grid.get_neighborhood(
+            self.pos,
+            True,
+            False,
+            2
+        )
+
+        others = self.scout()
+
+        if len(others) < 1:
+            print("I'm mooving hehe")
+
+            self.model.grid.move_agent(
+                self,
+                self.random.choice(
+                    possible_fields
+                ))
+        else:
+            print("I'm in touch with somebody ")
+            new_pos = [0, 0]
+
+            if others[0].pos[0] > self.pos[0]:
+                new_pos[0] = self.pos[0] + 2
+            elif others[0].pos[0] < self.pos[0]:
+                new_pos[0] = self.pos[0] - 2
+            else:
+                pass
+
+            if others[0].pos[1] > self.pos[1]:
+                new_pos[1] = self.pos[1] + 2
+            elif others[0].pos[1] < self.pos[1]:
+                new_pos[1] = self.pos[1] - 2
+            else:
+                pass
+
+            new_pos_tup = (new_pos[0], new_pos[1])
+            self.model.grid.move_agent(self, new_pos_tup)
+
+
+
+class Archers(MainAgent):
+    def __init__(self, id, model):
+        super().__init__(id, model)
+
+    def attack_opponent(self):
+        opponents = self.model.grid.get_neighbors(
+            self.pos,
+            True,
+            False,
+            2
+        )
+        if len(opponents) > 0:
+            print("Schooting")
+            other = self.random.choice(opponents)
+            other.health = other.health - self.attack
+
+    def step(self):
+        neighbors = self.model.grid.get_neighbors(
+            self.pos,
+            True,
+            False,
+            2
+        )
+        if len(neighbors) < 1:
+            self.move()
+        self.attack_opponent()

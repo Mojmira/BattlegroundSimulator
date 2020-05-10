@@ -2,7 +2,7 @@ from Model import *
 
 if __name__ == '__main__':
 
-    battle = Battlefield(1, 5, 5)
+    battle = Battlefield(2, 10, 10)
     for i in range(20):
         battle.step()
 
