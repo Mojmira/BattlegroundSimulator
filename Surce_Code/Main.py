@@ -2,12 +2,13 @@ from Model import *
 
 if __name__ == '__main__':
 
-    battle = Battlefield(50, 20, 20)
-    for i in range(100):
+    battle = Battlefield([2, 2, 2], [2, 2, 2], 20, 20)
+    for i in range(1):
         battle.step()
 
     for agent in battle.schedule.agents:
         print(agent.get_color())
+        print(agent.type)
 
     agent_counts = np.zeros((battle.grid.width, battle.grid.height))
     for cell in battle.grid.coord_iter():
@@ -17,3 +18,4 @@ if __name__ == '__main__':
     plt.imshow(agent_counts, interpolation='nearest')
     plt.colorbar()
     plt.show()
+    print(primes(100))

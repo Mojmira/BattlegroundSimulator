@@ -6,25 +6,51 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+def primes(n):  # simple Sieve of Eratosthenes
+    odds = range(3, n + 1, 2)
+    sieve = set(sum([list(range(q * q, n + 1, q + q)) for q in odds], []))
+    return [2] + [p for p in odds if p not in sieve]
+
+
 class Battlefield(Model):
-    def __init__(self, army_1, width, height):
+    def __init__(self, army_1, army_2, width, height):
         super().__init__()
-        self.numerical_army_1 = army_1
+        self.primes = primes(100)
+        self.width = width
+        self.height = height
+        self.army_1 = army_1
+        self.army_2 = army_2
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
         self.running = True
 
-        i = 0
-        for i in range(self.numerical_army_1):
-            a = Infantry(i, self)
-            self.schedule.add(a)
+        self.spawn(army_1, "red", 1)
+        self.spawn(army_2, "blue", 4)
 
-            x = self.random.randint(0, width - 1)
-            y = self.random.randint(0, height - 1)
-            if i % 2:
-                a.color = "blue"
+    def spawn(self, army, color, prime):
+        for i in range(len(army)):
+            if i == 0:
+                for j in range(army[i]):
+                    a = Infantry(self.primes[1*prime] * (j+1), self)
+                    self.add_at_random(a, color)
+            elif i == 1:
+                for k in range(army[i]):
+                    a = Archers(self.primes[2*prime] * (k+1), self)
+                    self.add_at_random(a, color)
+            elif i == 2:
+                for l in range(army[i]):
+                    a = Cavalry(self.primes[3*prime] * (l+1), self)
+                    self.add_at_random(a, color)
 
-            self.grid.place_agent(a, (x, y))
+    def add_at_random(self, agent, color):
+        self.schedule.add(agent)
+        agent.set_color(color)
+        # Na razie randomowe ale zmienimy potem na dokładniejsze
+        # TODO
+        x = self.random.randint(0, self.width - 1)
+        y = self.random.randint(0, self.height - 1)
+
+        self.grid.place_agent(agent, (x, y))
 
     def step(self):
         self.schedule.step()
@@ -143,6 +169,7 @@ class MainAgent(Agent):
 class Infantry(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
+        self.type = 'I'
 
     # Na nich się bazowałem robiąc główną klasę więc nie ma co na razie zmieniać XD
 
@@ -150,6 +177,7 @@ class Infantry(MainAgent):
 class Cavalry(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
+        self.type = 'C'
 
     def move(self):
         possible_fields = self.nearest_fields(2)
@@ -189,6 +217,7 @@ class Cavalry(MainAgent):
 class Archers(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
+        self.type = 'A'
 
     def attack_opponent(self):
         opponents = self.scout(2)
