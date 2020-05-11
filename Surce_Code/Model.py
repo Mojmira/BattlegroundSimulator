@@ -16,7 +16,7 @@ class Battlefield(Model):
 
         i = 0
         for i in range(self.numerical_army_1):
-            a = Archers(i, self)
+            a = Infantry(i, self)
             self.schedule.add(a)
 
             x = self.random.randint(0, width - 1)
@@ -27,19 +27,20 @@ class Battlefield(Model):
             self.grid.place_agent(a, (x, y))
 
     def step(self):
-        if self.schedule.agents.count(None) > 1:
-            self.schedule.agents.remove(None)
-        print(self.schedule.agents)
         self.schedule.step()
 
 
 class MainAgent(Agent):
     def __init__(self, id, model):
         super().__init__(id, model)
+        self.pos = None
         self.health = 100
         self.attack = 10
         self.model = model
         self.color = "red"
+
+    def get_pos(self):
+        return self.pos
 
     def get_dmg(self):
         return self.attack
@@ -63,6 +64,11 @@ class MainAgent(Agent):
             False,  # Srodek
             n  # Promien
         )
+
+        for a in field:
+            if a.get_color() == self.get_color():
+                field.remove(a)
+
         return field
 
     def nearest_fields(self, n):
@@ -79,15 +85,12 @@ class MainAgent(Agent):
         others = self.scout(7)
 
         if len(others) < 1:
-            print("I'm mooving hehe")
-
             self.model.grid.move_agent(
                 self,
                 self.random.choice(
                     self.nearest_fields(1)
                 ))
         else:
-            print("I'm in touch with somebody ")
             new_pos = [0, 0]
 
             if others[0].pos[0] > self.pos[0]:
@@ -105,10 +108,14 @@ class MainAgent(Agent):
                 pass
 
             new_pos_tup = (new_pos[0], new_pos[1])
-            self.model.grid.move_agent(self, new_pos_tup)
+            if self.model.grid.is_cell_empty(new_pos_tup):
+                self.model.grid.move_agent(self, new_pos_tup)
+            else:
+                pass
 
     def attack_opponent(self):
-        opponents = self.nearest_fields(1)
+        opponents = self.scout(1)
+
         if len(opponents) > 0:
             other = self.random.choice(opponents)
             other.hurt_me(self.get_dmg())
@@ -116,10 +123,8 @@ class MainAgent(Agent):
     def hurt_me(self, dmg):
         hp = self.get_hp()
         hp -= dmg
-        if self.is_dead(hp):
-            pass
-        else:
-            self.set_hp(hp)
+        self.set_hp(hp)
+        self.check_dead()
 
     def step(self):
         neighbors = self.scout(1)
@@ -127,13 +132,12 @@ class MainAgent(Agent):
             self.move()
         self.attack_opponent()
 
-    def is_dead(self, hp):
-        if hp <= 0:
-            self.model.grid.remove_agent(self)
-            print("RIP")
-            return True
-        else:
-            return False
+    def check_dead(self):
+        for a in self.model.schedule.agents:
+            if a.get_hp() <= 0:
+                print('RIP')
+                self.model.grid.remove_agent(a)
+                self.model.schedule.remove(a)
 
 
 class Infantry(MainAgent):
@@ -152,7 +156,6 @@ class Cavalry(MainAgent):
         others = self.scout(7)
 
         if len(others) < 1:
-            print("I'm mooving hehe")
 
             self.model.grid.move_agent(
                 self,
@@ -160,7 +163,6 @@ class Cavalry(MainAgent):
                     possible_fields
                 ))
         else:
-            print("I'm in touch with somebody ")
             new_pos = [0, 0]
 
             if others[0].pos[0] > self.pos[0]:
@@ -178,7 +180,10 @@ class Cavalry(MainAgent):
                 pass
 
             new_pos_tup = (new_pos[0], new_pos[1])
-            self.model.grid.move_agent(self, new_pos_tup)
+            if self.model.grid.is_cell_empty(new_pos_tup):
+                self.model.grid.move_agent(self, new_pos_tup)
+            else:
+                pass
 
 
 class Archers(MainAgent):

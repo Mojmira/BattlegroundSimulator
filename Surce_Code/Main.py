@@ -2,12 +2,12 @@ from Model import *
 
 if __name__ == '__main__':
 
-    battle = Battlefield(2, 10, 10)
-    for i in range(20):
+    battle = Battlefield(50, 20, 20)
+    for i in range(100):
         battle.step()
 
     for agent in battle.schedule.agents:
-        print(agent.scout())
+        print(agent.get_color())
 
     agent_counts = np.zeros((battle.grid.width, battle.grid.height))
     for cell in battle.grid.coord_iter():
