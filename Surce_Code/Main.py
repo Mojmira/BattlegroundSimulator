@@ -4,11 +4,10 @@ from ArmyCreation import *
 import time
 
 if __name__ == '__main__':
-    #in_line(0, 19, 0, "blue", "I")
-    #in_line(0, 19, 19, "red", "I")
+    in_line(0, 19, 5, "blue", "I")
+    in_line(0, 19, 15, "red", "I")
     battle = Battlefield([2, 2, 2], [2, 2, 2], 20, 20)
 
-    #clear_file()
 
 
     for i in range(100):

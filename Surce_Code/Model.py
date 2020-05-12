@@ -116,12 +116,12 @@ class MainAgent(Agent):
             False,  # Srodek
             n  # Promien
         )
-
+        opponents = []
         for a in field:
-            if a.get_color() == self.get_color():
-                field.remove(a)
+            if a.get_color() != self.get_color():
+                opponents.append(a)
 
-        return field
+        return opponents
 
     def nearest_fields(self, n):
         fields_around = self.model.grid.get_neighborhood(
@@ -134,7 +134,7 @@ class MainAgent(Agent):
 
     def move(self):
 
-        others = self.scout(7)
+        others = self.scout(9)
 
         if len(others) < 1:
             self.model.grid.move_agent(
@@ -167,6 +167,7 @@ class MainAgent(Agent):
 
     def attack_opponent(self):
         opponents = self.scout(1)
+        print(opponents)
 
         if len(opponents) > 0:
             other = self.random.choice(opponents)
@@ -180,11 +181,11 @@ class MainAgent(Agent):
 
     def step(self):
         neighbors = self.scout(1)
-        self.attack_opponent()
+
         if len(neighbors) < 1 & self.model.timer:
             self.move()
         else:
-            print("w8")
+            self.attack_opponent()
 
 
     def check_dead(self):
@@ -210,9 +211,11 @@ class Cavalry(MainAgent):
 
     def step(self):
         neighbors = self.scout(1)
-        self.attack_opponent()
+
         if len(neighbors) < 1:
             self.move()
+        else:
+            self.attack_opponent()
 
 
 class Archers(MainAgent):
