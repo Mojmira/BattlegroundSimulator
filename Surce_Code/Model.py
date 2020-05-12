@@ -27,8 +27,7 @@ class Battlefield(Model):
         self.schedule = RandomActivation(self)
         self.running = True
 
-        self.spawn(army_1, "red", 1)
-        self.spawn(army_2, "blue", 4)
+        self.spawn_from_file()
 
     def spawn(self, army, color, prime):
         for i in range(len(army)):
@@ -64,6 +63,7 @@ class Battlefield(Model):
             elif element[2] == 'C':
                 a = Cavalry(self.agents, self)
             self.agents += 1
+            a.set_color(element[3])
             self.schedule.add(a)
 
             if self.grid.is_cell_empty((element[0], element[1])):

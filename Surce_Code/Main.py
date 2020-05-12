@@ -2,13 +2,8 @@ from Model import *
 from Data import *
 
 if __name__ == '__main__':
-    #print(army_list)
-
-
     battle = Battlefield([2, 2, 2], [2, 2, 2], 20, 20)
 
-    battle.spawn_from_file()
-    '''
     for i in range(1):
         battle.step()
 
@@ -24,5 +19,3 @@ if __name__ == '__main__':
     plt.imshow(agent_counts, interpolation='nearest')
     plt.colorbar()
     plt.show()
-    print(primes(100))
-    '''
