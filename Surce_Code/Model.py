@@ -18,7 +18,6 @@ class Battlefield(Model):
         super().__init__()
         self.primes = primes(100)
         self.width = width
-        self.agents = 0
         self.height = height
         self.army_1 = army_1
         self.army_2 = army_2
@@ -57,17 +56,19 @@ class Battlefield(Model):
     def spawn_from_file(self):
         for element in mylist:
             if element[2] == 'I':
-                a = Infantry(self.agents, self)
+                a = Infantry(self.current_id, self)
             elif element[2] == 'A':
-                a = Archers(self.agents, self)
+                a = Archers(self.current_id, self)
             elif element[2] == 'C':
-                a = Cavalry(self.agents, self)
-            self.agents += 1
+                a = Cavalry(self.current_id, self)
+            self.next_id()
             a.set_color(element[3])
             self.schedule.add(a)
 
             if self.grid.is_cell_empty((element[0], element[1])):
                 self.grid.place_agent(a, (element[0], element[1]))
+            else:
+                print("Unable to place unit on that cell")
 
 
 

@@ -1,10 +1,17 @@
 from Model import *
 from Data import *
+from ArmyCreation import *
+import time
 
 if __name__ == '__main__':
+    #in_line(0, 19, 0, "blue", "I")
+    #in_line(0, 19, 19, "red", "I")
     battle = Battlefield([2, 2, 2], [2, 2, 2], 20, 20)
 
-    for i in range(1):
+    #clear_file()
+
+
+    for i in range(100):
         battle.step()
 
     for agent in battle.schedule.agents:
@@ -19,3 +26,4 @@ if __name__ == '__main__':
     plt.imshow(agent_counts, interpolation='nearest')
     plt.colorbar()
     plt.show()
+
