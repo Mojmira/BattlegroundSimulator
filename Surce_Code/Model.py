@@ -75,7 +75,10 @@ class Battlefield(Model):
 
     def step(self):
         self.schedule.step()
-        self.timer = self.timer & False
+        if self.timer == True:
+            self.timer = False
+        else:
+            self.timer = True
 
 
 class MainAgent(Agent):
@@ -180,6 +183,8 @@ class MainAgent(Agent):
         self.attack_opponent()
         if len(neighbors) < 1 & self.model.timer:
             self.move()
+        else:
+            print("w8")
 
 
     def check_dead(self):
@@ -223,6 +228,8 @@ class Archers(MainAgent):
 
     def step(self):
         neighbors = self.scout(2)
-        if len(neighbors) < 1:
+        if len(neighbors) < 1 & self.model.timer:
             self.move()
+        else:
+            print("w8")
         self.attack_opponent()
