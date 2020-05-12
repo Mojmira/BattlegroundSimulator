@@ -75,7 +75,7 @@ class Battlefield(Model):
 
     def step(self):
         self.schedule.step()
-        self.timer = False
+        self.timer = self.timer & False
 
 
 class MainAgent(Agent):
@@ -86,6 +86,7 @@ class MainAgent(Agent):
         self.attack = 10
         self.model = model
         self.color = "red"
+        self.type = 'I'
 
     def get_pos(self):
         return self.pos
