@@ -2,8 +2,9 @@ from mesa import Model
 from mesa import Agent
 from mesa.space import MultiGrid
 from mesa.time import RandomActivation
-import numpy as np
 import matplotlib.pyplot as plt
+
+from Data import *
 
 
 def primes(n):  # simple Sieve of Eratosthenes
@@ -17,9 +18,11 @@ class Battlefield(Model):
         super().__init__()
         self.primes = primes(100)
         self.width = width
+        self.agents = 0
         self.height = height
         self.army_1 = army_1
         self.army_2 = army_2
+        self.timer = True
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
         self.running = True
@@ -52,8 +55,26 @@ class Battlefield(Model):
 
         self.grid.place_agent(agent, (x, y))
 
+    def spawn_from_file(self):
+        for element in mylist:
+            if element[2] == 'I':
+                a = Infantry(self.agents, self)
+            elif element[2] == 'A':
+                a = Archers(self.agents, self)
+            elif element[2] == 'C':
+                a = Cavalry(self.agents, self)
+            self.agents += 1
+            self.schedule.add(a)
+
+            if self.grid.is_cell_empty((element[0], element[1])):
+                self.grid.place_agent(a, (element[0], element[1]))
+
+
+
+
     def step(self):
         self.schedule.step()
+        self.timer = False
 
 
 class MainAgent(Agent):
@@ -154,9 +175,10 @@ class MainAgent(Agent):
 
     def step(self):
         neighbors = self.scout(1)
-        if len(neighbors) < 1:
-            self.move()
         self.attack_opponent()
+        if len(neighbors) < 1 & self.model.timer:
+            self.move()
+
 
     def check_dead(self):
         for a in self.model.schedule.agents:
@@ -179,39 +201,11 @@ class Cavalry(MainAgent):
         super().__init__(id, model)
         self.type = 'C'
 
-    def move(self):
-        possible_fields = self.nearest_fields(2)
-        others = self.scout(7)
-
-        if len(others) < 1:
-
-            self.model.grid.move_agent(
-                self,
-                self.random.choice(
-                    possible_fields
-                ))
-        else:
-            new_pos = [0, 0]
-
-            if others[0].pos[0] > self.pos[0]:
-                new_pos[0] = self.pos[0] + 2
-            elif others[0].pos[0] < self.pos[0]:
-                new_pos[0] = self.pos[0] - 2
-            else:
-                pass
-
-            if others[0].pos[1] > self.pos[1]:
-                new_pos[1] = self.pos[1] + 2
-            elif others[0].pos[1] < self.pos[1]:
-                new_pos[1] = self.pos[1] - 2
-            else:
-                pass
-
-            new_pos_tup = (new_pos[0], new_pos[1])
-            if self.model.grid.is_cell_empty(new_pos_tup):
-                self.model.grid.move_agent(self, new_pos_tup)
-            else:
-                pass
+    def step(self):
+        neighbors = self.scout(1)
+        self.attack_opponent()
+        if len(neighbors) < 1:
+            self.move()
 
 
 class Archers(MainAgent):
