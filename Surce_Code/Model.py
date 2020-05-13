@@ -147,14 +147,14 @@ class MainAgent(Agent):
             elif others[0].pos[0] < self.pos[0]:
                 new_pos[0] = self.pos[0] - 1
             else:
-                pass
+                new_pos[0] = self.pos[0]
 
             if others[0].pos[1] > self.pos[1]:
                 new_pos[1] = self.pos[1] + 1
             elif others[0].pos[1] < self.pos[1]:
                 new_pos[1] = self.pos[1] - 1
             else:
-                pass
+                new_pos[1] = self.pos[1]
 
             new_pos_tup = (new_pos[0], new_pos[1])
             if self.model.grid.is_cell_empty(new_pos_tup):
