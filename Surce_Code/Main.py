@@ -4,10 +4,12 @@ from ArmyCreation import *
 import time
 
 if __name__ == '__main__':
-    in_line(0, 19, 5, "blue", "C")
-    in_line(0, 19, 3, "blue", "A")
+    in_line(0, 19, 5, "#00AAB2", "C")
+    in_line(0, 19, 3, "#00AAB2", "A")
+    in_line(0, 19, 4, "#00AAB2", "I")
     in_line(0, 19, 15, "red", "C")
     in_line(0, 19, 17, "red", "C")
+    in_line(0, 19, 16, "red", "I")
     battle = Battlefield([2, 2, 2], [2, 2, 2], 20, 20)
 
 
