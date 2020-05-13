@@ -32,15 +32,15 @@ class Battlefield(Model):
         for i in range(len(army)):
             if i == 0:
                 for j in range(army[i]):
-                    a = Infantry(self.primes[1*prime] * (j+1), self)
+                    a = Infantry(self.primes[1 * prime] * (j + 1), self)
                     self.add_at_random(a, color)
             elif i == 1:
                 for k in range(army[i]):
-                    a = Archers(self.primes[2*prime] * (k+1), self)
+                    a = Archers(self.primes[2 * prime] * (k + 1), self)
                     self.add_at_random(a, color)
             elif i == 2:
                 for l in range(army[i]):
-                    a = Cavalry(self.primes[3*prime] * (l+1), self)
+                    a = Cavalry(self.primes[3 * prime] * (l + 1), self)
                     self.add_at_random(a, color)
 
     def add_at_random(self, agent, color):
@@ -69,9 +69,6 @@ class Battlefield(Model):
                 self.grid.place_agent(a, (element[0], element[1]))
             else:
                 print("Unable to place unit on that cell")
-
-
-
 
     def step(self):
         self.schedule.step()
@@ -187,13 +184,11 @@ class MainAgent(Agent):
         else:
             self.attack_opponent()
 
-
     def check_dead(self):
-        for a in self.model.schedule.agents:
-            if a.get_hp() <= 0:
-                print('RIP')
-                self.model.grid.remove_agent(a)
-                self.model.schedule.remove(a)
+        if self.get_hp() <= 0:
+            print('RIP')
+            self.model.grid.remove_agent(self)
+            self.model.schedule.remove(self)
 
 
 class Infantry(MainAgent):
