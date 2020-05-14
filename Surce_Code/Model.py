@@ -7,51 +7,18 @@ import matplotlib.pyplot as plt
 from Data import *
 
 
-def primes(n):  # simple Sieve of Eratosthenes
-    odds = range(3, n + 1, 2)
-    sieve = set(sum([list(range(q * q, n + 1, q + q)) for q in odds], []))
-    return [2] + [p for p in odds if p not in sieve]
-
-
 class Battlefield(Model):
-    def __init__(self, army_1, army_2, width, height):
+    def __init__(self, width, height):
         super().__init__()
-        self.primes = primes(100)
+
         self.width = width
         self.height = height
-        self.army_1 = army_1
-        self.army_2 = army_2
-        self.timer = True
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
+        self.timer = True
         self.running = True
 
         self.spawn_from_file()
-
-    def spawn(self, army, color, prime):
-        for i in range(len(army)):
-            if i == 0:
-                for j in range(army[i]):
-                    a = Infantry(self.primes[1 * prime] * (j + 1), self)
-                    self.add_at_random(a, color)
-            elif i == 1:
-                for k in range(army[i]):
-                    a = Archers(self.primes[2 * prime] * (k + 1), self)
-                    self.add_at_random(a, color)
-            elif i == 2:
-                for l in range(army[i]):
-                    a = Cavalry(self.primes[3 * prime] * (l + 1), self)
-                    self.add_at_random(a, color)
-
-    def add_at_random(self, agent, color):
-        self.schedule.add(agent)
-        agent.set_color(color)
-        # Na razie randomowe ale zmienimy potem na dokładniejsze
-        # TODO
-        x = self.random.randint(0, self.width - 1)
-        y = self.random.randint(0, self.height - 1)
-
-        self.grid.place_agent(agent, (x, y))
 
     def spawn_from_file(self):
         for element in mylist:
@@ -72,7 +39,7 @@ class Battlefield(Model):
 
     def step(self):
         self.schedule.step()
-        if self.timer == True:
+        if self.timer:
             self.timer = False
         else:
             self.timer = True
@@ -226,8 +193,8 @@ class Archers(MainAgent):
 
     def step(self):
         neighbors = self.scout(2)
+
         if len(neighbors) < 1 & self.model.timer:
             self.move()
         else:
-            print("w8")
-        self.attack_opponent()
+            self.attack_opponent()

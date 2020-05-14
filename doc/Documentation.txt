@@ -1,0 +1,72 @@
+Dokumentacja do Projektu Battleground Simulator:
+
+1.Wstęp
+2.Znaczenie plików
+3.Poszczególne funkcje
+
+
+---------- 1 ----------
+Program przy pomocy biblioteki mesa pokazuje proste symulacje agentowe bijących się armii z okresu średniowiecza
+
+---------- 2 ----------
+
+army.txt - Przetrzymywane są w nim dane dotyczące początkowego rozmieszczenia jednostek na planszy
+ArmyCreation.py - Skrypt pozwalający na szybkie tworzenie większych armii w pliku army.txt
+Data.py - Skrypt czytający plik army.txt
+Main.py - Skrypt do testów
+Model.py - Znajdują się w nim klasy modelu i agentów którzy są wykożystywani do symulacji
+ModelVisualization.py - Wizualizacja modelu krok po kroku na stronie lokalnej
+
+---------- 3 ----------
+
+*ArmyCreation*
+clear_file() - czyści plik
+in_line(int x_pierwszej_kratki,int x_ostatniej_kratki,int wysokość, string kolor, string rodzaj_jednostki) - tworzy jednostki w pliku w linii
+
+*Data*
+--
+
+*Main*
+--
+
+*Model*
+Klasa Model:
+
+__init__(int szerokość_planszy, int wysokość_planszy) - inicjalizuje planszę
+spawn_from_file() - inicjalizuje agentów oraz stawia ich na planszy
+step() - uruchania step() wszystkich agentów w losowej kolejności
+
+Klasa Agent{Główna}:
+
+__init__(int unikalne_id, model) - inicjalizuje agenta (id agentów w modelu nie moga się powtarzać), model-model do jakiego chcemy wrzucić agenta
+get_pos() - zwraca pozycję agenta (int,int)
+get_dmg() - zwraca atak agenta int
+get_hp() - zwraca aktualne hp agenta int
+get_color() - zwraca kolor agenta string
+set_hp(int wartość_na_którą_chcemy_zmienić) - ustawia hp agenta
+set_color(string kolor_który_chcemy_przypisać) - ustawia kolor agenta
+scout(int zasięg) - zwraca listę agentów o innym kolorze niż własny w zasięgu
+nearest_fields(int zasięg) - zwraca najbliższe pola w zasięgu
+move() - przesuwa agenta w stronę przeciwnika albo jak go nie widzi to losowo nim porusza
+attack_opponent() - atakuje losowego przeciwnika w swoim zasiegu
+hurt_me(int obrażenia) - rani agenta o obrażenia
+step() - akcja w jednostce czasu
+check_dead() - sprawdza czy agent dalej żyje
+
+Klasa Agent{Piechota}:
+
+__init__(int unikalne_id, model) - inicjalizuje agenta (id agentów w modelu nie moga się powtarzać), model-model do jakiego chcemy wrzucić agenta
+
+Klasa Agent{Lucznicy}:
+__init__(int unikalne_id, model) - inicjalizuje agenta (id agentów w modelu nie moga się powtarzać), model-model do jakiego chcemy wrzucić agenta
+attack_opponent() - robi to samo co w klasie głównej ale na większym zasięgu
+step() - to co w klasie głównej
+
+Klasa Agent{Kawaleria}:
+
+__init__(int unikalne_id, model) - inicjalizuje agenta (id agentów w modelu nie moga się powtarzać), model-model do jakiego chcemy wrzucić agenta
+step() - to co w klasie głównej
+
+*ModelVisualization*
+
+agent_portrayal(agent) - rysowanie agenta danego jako argument
