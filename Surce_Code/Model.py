@@ -131,7 +131,6 @@ class MainAgent(Agent):
 
     def attack_opponent(self):
         opponents = self.scout(1)
-        print(opponents)
 
         if len(opponents) > 0:
             other = self.random.choice(opponents)
@@ -153,7 +152,6 @@ class MainAgent(Agent):
 
     def check_dead(self):
         if self.get_hp() <= 0:
-            print('RIP')
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
 

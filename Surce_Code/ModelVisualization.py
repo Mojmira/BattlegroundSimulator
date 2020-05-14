@@ -40,6 +40,6 @@ grid = CanvasGrid(agent_portrayal, 20, 20, 500, 500)
 server = ModularServer(Battlefield,
                        [grid],
                        "Draw Model",
-                       {"army_1": [2, 2, 2], "army_2": [2, 2, 2], "width": 20, "height": 20})
+                       {"width": 20, "height": 20})
 server.port = 8521  # The default
 server.launch()
