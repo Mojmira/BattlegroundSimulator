@@ -3,6 +3,9 @@ from mesa import Agent
 from mesa.space import MultiGrid
 from mesa.time import RandomActivation
 import matplotlib.pyplot as plt
+from pathfinding.core.diagonal_movement import DiagonalMovement
+from pathfinding.core.grid import Grid
+from pathfinding.finder.a_star import AStarFinder
 
 from Data import *
 
@@ -17,8 +20,11 @@ class Battlefield(Model):
         self.schedule = RandomActivation(self)
         self.timer = True
         self.running = True
+        self.help_grid = []
+        self.path_grid = Grid(matrix=np.transpose(self.help_grid))
 
         self.spawn_from_file()
+        self.update_path()
 
     def spawn_from_file(self):
         for element in mylist:
@@ -28,6 +34,8 @@ class Battlefield(Model):
                 a = Archers(self.current_id, self)
             elif element[2] == 'C':
                 a = Cavalry(self.current_id, self)
+            elif element[2] == 'R':
+                a = Rock(self.current_id, self)
             self.next_id()
             a.set_color(element[3])
             self.schedule.add(a)
@@ -43,6 +51,18 @@ class Battlefield(Model):
             self.timer = False
         else:
             self.timer = True
+
+    def update_path(self):
+        temp = []
+        for i in range(self.height):
+            temp.clear()
+            for j in range(self.width):
+                if self.grid.is_cell_empty((i, j)):
+                    temp.append(1)
+                else:
+                    temp.append(0)
+            self.help_grid.append(temp)
+
 
 
 class MainAgent(Agent):
@@ -107,9 +127,8 @@ class MainAgent(Agent):
                     self.nearest_fields(1)
                 ))
         else:
-            new_pos = [0, 0]
-
-            if others[0].pos[0] > self.pos[0]:
+            nemezis = self.random.choice(others)
+            """            if others[0].pos[0] > self.pos[0]:
                 new_pos[0] = self.pos[0] + 1
             elif others[0].pos[0] < self.pos[0]:
                 new_pos[0] = self.pos[0] - 1
@@ -127,7 +146,17 @@ class MainAgent(Agent):
             if self.model.grid.is_cell_empty(new_pos_tup):
                 self.model.grid.move_agent(self, new_pos_tup)
             else:
-                pass
+                pass"""
+            print(self.pos)
+            start = self.model.path_grid.node(self.pos[0], self.pos[1])
+            end = self.model.path_grid.node(nemezis.pos[0], nemezis.pos[1])
+
+            finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
+            path, runs = finder.find_path(start, end, self.model.path_grid)
+            if self.model.grid.is_cell_empty((path[1][0], path[1][1])):
+                self.model.grid.move_agent(self, (path[1][0], path[1][1]))
+            else:
+                print("path finding is sheet")
 
     def attack_opponent(self):
         opponents = self.scout(1)
@@ -196,3 +225,13 @@ class Archers(MainAgent):
             self.move()
         else:
             self.attack_opponent()
+
+
+class Rock(Agent):
+    def __init__(self, id, model):
+        super().__init__(id, model)
+        self.type = 'R'
+
+    def setp(self):
+        pass
+
