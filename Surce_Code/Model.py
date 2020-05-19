@@ -157,6 +157,7 @@ class MainAgent(Agent):
 
             finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
             path, runs = finder.find_path(start, end, self.model.path_grid)
+            print(self.model.path_grid.grid_str(path=path, start=start, end=end))
             print(path)
 
             if len(path) > 0:
@@ -164,6 +165,7 @@ class MainAgent(Agent):
                     self.model.grid.move_agent(self, (path[1][0], path[1][1]))
             else:
                 print("im stuck")
+            self.model.update_path()
 
     def attack_opponent(self):
         opponents = self.scout(1)
