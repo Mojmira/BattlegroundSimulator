@@ -21,10 +21,11 @@ class Battlefield(Model):
         self.timer = True
         self.running = True
         self.help_grid = []
-        self.path_grid = Grid(matrix=np.transpose(self.help_grid))
 
         self.spawn_from_file()
         self.update_path()
+
+        self.path_grid = Grid(matrix=np.transpose(self.help_grid))
 
     def spawn_from_file(self):
         for element in mylist:
@@ -46,6 +47,7 @@ class Battlefield(Model):
                 print("Unable to place unit on that cell")
 
     def step(self):
+        self.update_path()
         self.schedule.step()
         if self.timer:
             self.timer = False
@@ -62,7 +64,7 @@ class Battlefield(Model):
                 else:
                     temp.append(0)
             self.help_grid.append(temp)
-
+        self.path_grid = Grid(matrix=np.transpose(self.help_grid))
 
 
 class MainAgent(Agent):
@@ -127,8 +129,11 @@ class MainAgent(Agent):
                     self.nearest_fields(1)
                 ))
         else:
+            self.model.path_grid.cleanup()
             nemezis = self.random.choice(others)
-            """            if others[0].pos[0] > self.pos[0]:
+            """            
+            new_pos = [0,0]
+            if others[0].pos[0] > self.pos[0]:
                 new_pos[0] = self.pos[0] + 1
             elif others[0].pos[0] < self.pos[0]:
                 new_pos[0] = self.pos[0] - 1
@@ -147,16 +152,18 @@ class MainAgent(Agent):
                 self.model.grid.move_agent(self, new_pos_tup)
             else:
                 pass"""
-            print(self.pos)
             start = self.model.path_grid.node(self.pos[0], self.pos[1])
             end = self.model.path_grid.node(nemezis.pos[0], nemezis.pos[1])
 
             finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
             path, runs = finder.find_path(start, end, self.model.path_grid)
-            if self.model.grid.is_cell_empty((path[1][0], path[1][1])):
-                self.model.grid.move_agent(self, (path[1][0], path[1][1]))
+            print(path)
+
+            if len(path) > 0:
+                if self.model.grid.is_cell_empty((path[1][0], path[1][1])):
+                    self.model.grid.move_agent(self, (path[1][0], path[1][1]))
             else:
-                print("path finding is sheet")
+                print("im stuck")
 
     def attack_opponent(self):
         opponents = self.scout(1)
@@ -234,4 +241,3 @@ class Rock(Agent):
 
     def setp(self):
         pass
-
