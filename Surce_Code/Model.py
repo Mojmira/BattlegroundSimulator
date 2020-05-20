@@ -67,15 +67,11 @@ class MainAgent(Agent):
         for i in range(self.model.height):
             temp.clear()
             for j in range(self.model.width):
-                if self.model.grid.is_cell_empty((i, j)) or self.pos == (i, j) or enemy.pos == (i, j):
-                    print(i, j, self.model.grid.is_cell_empty((0, 1)))
+                if self.model.grid.is_cell_empty((j, i)) or self.pos == (j, i) or enemy.pos == (j, i):
                     temp.append(1)
                 else:
-                    temp.insert(temp.__len__(), 0)
-            self.help_grid.append(temp)
-        for i in range(self.help_grid.__len__()):
-            print(self.help_grid[i])
-
+                    temp.append(0)
+            self.help_grid.append(temp[:])
         self.Grid = Grid(matrix=self.help_grid)
 
     def get_pos(self):
@@ -133,8 +129,6 @@ class MainAgent(Agent):
         else:
             nemesis = self.random.choice(others)
             self.update_path(nemesis)
-            print(self.model.grid.is_cell_empty((0, 1)))
-
             """        
             new_pos = [0,0]
             if others[0].pos[0] > self.pos[0]:
@@ -161,8 +155,8 @@ class MainAgent(Agent):
 
             finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
             path, runs = finder.find_path(start, end, self.Grid)
-            print(self.Grid.grid_str(path=path, start=start, end=end))
-            print(path)
+            #print(self.Grid.grid_str(path=path, start=start, end=end))
+            #print(path)
 
             if len(path) > 0:
                 if self.model.grid.is_cell_empty((path[1][0], path[1][1])):
