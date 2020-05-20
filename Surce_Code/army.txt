@@ -1,12 +1,3 @@
-0,7,I,#00AAB2
-0,15,I,red
-0,9,R,black
-1,9,R,black
-2,9,R,black
-3,9,R,black
-4,9,R,black
-5,9,R,black
-6,9,R,black
-7,9,R,black
-8,9,R,black
-9,9,R,black
+0,0,I,red
+0,1,R,black
+1,5,I,blue

@@ -59,7 +59,7 @@ class MainAgent(Agent):
         self.color = "red"
         self.type = 'I'
         self.help_grid = []
-        self.Grid = Grid(matrix=np.transpose(self.help_grid))
+        self.Grid = Grid(matrix=self.help_grid)
 
     def update_path(self, enemy):
         self.help_grid.clear()
@@ -68,13 +68,15 @@ class MainAgent(Agent):
             temp.clear()
             for j in range(self.model.width):
                 if self.model.grid.is_cell_empty((i, j)) or self.pos == (i, j) or enemy.pos == (i, j):
+                    print(i, j, self.model.grid.is_cell_empty((0, 1)))
                     temp.append(1)
                 else:
-                    temp.append(0)
+                    temp.insert(temp.__len__(), 0)
             self.help_grid.append(temp)
         for i in range(self.help_grid.__len__()):
             print(self.help_grid[i])
-        self.Grid = Grid(matrix=np.transpose(self.help_grid))
+
+        self.Grid = Grid(matrix=self.help_grid)
 
     def get_pos(self):
         return self.pos
@@ -131,11 +133,8 @@ class MainAgent(Agent):
         else:
             nemesis = self.random.choice(others)
             self.update_path(nemesis)
+            print(self.model.grid.is_cell_empty((0, 1)))
 
-            print(self.help_grid[0][9])
-            print(self.pos)
-            print(nemesis.pos)
-            print(self.model.grid.is_cell_empty((0, 9)))
             """        
             new_pos = [0,0]
             if others[0].pos[0] > self.pos[0]:
