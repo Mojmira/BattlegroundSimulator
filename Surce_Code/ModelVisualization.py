@@ -7,12 +7,12 @@ from Model import Battlefield
 def agent_portrayal(agent):
     if agent.type == 'I':
         portrayal = {"Shape": "circle",
-                 "Color": agent.color,
-                 "Filled": "true",
-                 "Layer": 0,
-                 "r": 0.5,
-                 "text": agent.get_hp(),
-                 "text_color": "black"}
+                     "Color": agent.color,
+                     "Filled": "true",
+                     "Layer": 0,
+                     "r": 0.5,
+                     "text": agent.get_hp(),
+                     "text_color": "black"}
     elif agent.type == 'C':
         portrayal = {"Shape": "rect",
                      "Color": agent.color,
@@ -32,6 +32,13 @@ def agent_portrayal(agent):
                      "heading_y": 1,
                      "text": agent.get_hp(),
                      "text_color": "black"}
+    elif agent.type == 'R':
+        portrayal = {"Shape": "rect",
+                     "Color": agent.color,
+                     "Filled": "true",
+                     "Layer": 0,
+                     "w": 0.5,
+                     "h": 0.5}
 
     return portrayal
 

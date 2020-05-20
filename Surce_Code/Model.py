@@ -20,12 +20,7 @@ class Battlefield(Model):
         self.schedule = RandomActivation(self)
         self.timer = True
         self.running = True
-        self.help_grid = []
-
         self.spawn_from_file()
-        self.update_path()
-
-        self.path_grid = Grid(matrix=np.transpose(self.help_grid))
 
     def spawn_from_file(self):
         for element in mylist:
@@ -47,24 +42,11 @@ class Battlefield(Model):
                 print("Unable to place unit on that cell")
 
     def step(self):
-        self.update_path()
         self.schedule.step()
         if self.timer:
             self.timer = False
         else:
             self.timer = True
-
-    def update_path(self):
-        temp = []
-        for i in range(self.height):
-            temp.clear()
-            for j in range(self.width):
-                if self.grid.is_cell_empty((i, j)):
-                    temp.append(1)
-                else:
-                    temp.append(0)
-            self.help_grid.append(temp)
-        self.path_grid = Grid(matrix=np.transpose(self.help_grid))
 
 
 class MainAgent(Agent):
@@ -76,6 +58,23 @@ class MainAgent(Agent):
         self.model = model
         self.color = "red"
         self.type = 'I'
+        self.help_grid = []
+        self.Grid = Grid(matrix=np.transpose(self.help_grid))
+
+    def update_path(self, enemy):
+        self.help_grid.clear()
+        temp = []
+        for i in range(self.model.height):
+            temp.clear()
+            for j in range(self.model.width):
+                if self.model.grid.is_cell_empty((i, j)) or self.pos == (i, j) or enemy.pos == (i, j):
+                    temp.append(1)
+                else:
+                    temp.append(0)
+            self.help_grid.append(temp)
+        for i in range(self.help_grid.__len__()):
+            print(self.help_grid[i])
+        self.Grid = Grid(matrix=np.transpose(self.help_grid))
 
     def get_pos(self):
         return self.pos
@@ -104,9 +103,10 @@ class MainAgent(Agent):
         )
         opponents = []
         for a in field:
-            if a.get_color() != self.get_color():
+            if a.get_color() == self.get_color() or a.get_color() == 'black':
+                pass
+            else:
                 opponents.append(a)
-
         return opponents
 
     def nearest_fields(self, n):
@@ -129,9 +129,14 @@ class MainAgent(Agent):
                     self.nearest_fields(1)
                 ))
         else:
-            self.model.path_grid.cleanup()
-            nemezis = self.random.choice(others)
-            """            
+            nemesis = self.random.choice(others)
+            self.update_path(nemesis)
+
+            print(self.help_grid[0][9])
+            print(self.pos)
+            print(nemesis.pos)
+            print(self.model.grid.is_cell_empty((0, 9)))
+            """        
             new_pos = [0,0]
             if others[0].pos[0] > self.pos[0]:
                 new_pos[0] = self.pos[0] + 1
@@ -152,12 +157,12 @@ class MainAgent(Agent):
                 self.model.grid.move_agent(self, new_pos_tup)
             else:
                 pass"""
-            start = self.model.path_grid.node(self.pos[0], self.pos[1])
-            end = self.model.path_grid.node(nemezis.pos[0], nemezis.pos[1])
+            start = self.Grid.node(self.pos[0], self.pos[1])
+            end = self.Grid.node(nemesis.pos[0], nemesis.pos[1])
 
             finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
-            path, runs = finder.find_path(start, end, self.model.path_grid)
-            print(self.model.path_grid.grid_str(path=path, start=start, end=end))
+            path, runs = finder.find_path(start, end, self.Grid)
+            print(self.Grid.grid_str(path=path, start=start, end=end))
             print(path)
 
             if len(path) > 0:
@@ -165,7 +170,7 @@ class MainAgent(Agent):
                     self.model.grid.move_agent(self, (path[1][0], path[1][1]))
             else:
                 print("im stuck")
-            self.model.update_path()
+            self.Grid.cleanup()
 
     def attack_opponent(self):
         opponents = self.scout(1)
@@ -236,10 +241,11 @@ class Archers(MainAgent):
             self.attack_opponent()
 
 
-class Rock(Agent):
+class Rock(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
+        self.color = 'black'
         self.type = 'R'
 
-    def setp(self):
+    def step(self):
         pass
