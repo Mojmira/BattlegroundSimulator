@@ -9,8 +9,20 @@ from pathfinding.finder.a_star import AStarFinder
 
 from Data import *
 
+"""
+Model.py
+================================
+Tutaj znajduje się cały model 
+"""
 
 class Battlefield(Model):
+    """
+    Główna klasa modelu w której wszystko sie dzieje
+
+    Arg:
+    width (int): szerokość planszy
+    height (int): wysokość planszy
+    """
     def __init__(self, width, height):
         super().__init__()
 
@@ -23,6 +35,12 @@ class Battlefield(Model):
         self.spawn_from_file()
 
     def spawn_from_file(self):
+
+        """
+        Wkłada jednostki z listy na planszę
+        :return:
+        """
+
         for element in mylist:
             if element[2] == 'I':
                 a = Infantry(self.current_id, self)
@@ -42,6 +60,10 @@ class Battlefield(Model):
                 print("Unable to place unit on that cell")
 
     def step(self):
+        """
+        Uruchamia losowo wszystkich agentów
+        :return:
+        """
         self.schedule.step()
         if self.timer:
             self.timer = False
@@ -50,6 +72,15 @@ class Battlefield(Model):
 
 
 class MainAgent(Agent):
+
+    """
+    Klasa główna z której dziedziczą potem poszczególne typy jednostek
+
+    Arg:
+    id (int): unikalny id agenta
+    model : model w którym agent będzie działać
+    """
+
     def __init__(self, id, model):
         super().__init__(id, model)
         self.pos = None
@@ -62,6 +93,13 @@ class MainAgent(Agent):
         self.Grid = Grid(matrix=self.help_grid)
 
     def update_path(self, enemy):
+
+        """
+        Aktualizuje plansze przeszkód widzianych przez agenta
+        :param enemy: Agent który ma być widziany nie jako przeszkoda
+        :return:
+        """
+
         self.help_grid.clear()
         temp = []
         for i in range(self.model.height):
@@ -75,24 +113,69 @@ class MainAgent(Agent):
         self.Grid = Grid(matrix=self.help_grid)
 
     def get_pos(self):
+
+        """
+        Getter pozycji
+        :return: zwraca pozycję
+        """
+
         return self.pos
 
     def get_dmg(self):
+
+        """
+        Getter obrażeń
+        :return: zwraca atak jednostki
+        """
+
         return self.attack
 
     def get_hp(self):
+
+        """
+        getter życia
+        :return: zwraca aktualne życie agenta
+        """
+
         return self.health
 
     def get_color(self):
+
+        """
+        getter koloru
+        :return: zwraca kolor agenta
+        """
+
         return self.color
 
     def set_hp(self, hp):
+
+        """
+        ustawia życie agenta
+        :param hp: nowe życie agenta
+        :return:
+        """
+
         self.health = hp
 
     def set_color(self, color):
+
+        """
+        ustawia kolor agenta
+        :param color: nowy kolor agenta
+        :return:
+        """
+
         self.color = color
 
     def scout(self, n):
+
+        """
+        Szuka w zasiegu (n) przeciwników
+        :param n: zasięg
+        :return: zwraca listę przeciwników
+        """
+
         field = self.model.grid.get_neighbors(
             self.pos,  # Pozycja jednostki
             True,  # True=Moore neighborhood False=Von Neumann neighborhood
@@ -108,6 +191,11 @@ class MainAgent(Agent):
         return opponents
 
     def nearest_fields(self, n):
+        """
+        sprawdza pola na które agent może przejść w zasięgu
+        :param n: zasięg
+        :return: zwraca listę krotek
+        """
         fields_around = self.model.grid.get_neighborhood(
             self.pos,
             True,
@@ -117,6 +205,14 @@ class MainAgent(Agent):
         return fields_around
 
     def move(self):
+
+        """
+        Metoda poruszająca agenta
+        Kiedy nikogo nie widzi porusza się losowo
+        Jak widzi to idzie w jego stronę najszybszą ścieżką
+        :return:
+        """
+
 
         others = self.scout(9)
 
@@ -129,34 +225,12 @@ class MainAgent(Agent):
         else:
             nemesis = self.random.choice(others)
             self.update_path(nemesis)
-            """        
-            new_pos = [0,0]
-            if others[0].pos[0] > self.pos[0]:
-                new_pos[0] = self.pos[0] + 1
-            elif others[0].pos[0] < self.pos[0]:
-                new_pos[0] = self.pos[0] - 1
-            else:
-                new_pos[0] = self.pos[0]
 
-            if others[0].pos[1] > self.pos[1]:
-                new_pos[1] = self.pos[1] + 1
-            elif others[0].pos[1] < self.pos[1]:
-                new_pos[1] = self.pos[1] - 1
-            else:
-                new_pos[1] = self.pos[1]
-
-            new_pos_tup = (new_pos[0], new_pos[1])
-            if self.model.grid.is_cell_empty(new_pos_tup):
-                self.model.grid.move_agent(self, new_pos_tup)
-            else:
-                pass"""
             start = self.Grid.node(self.pos[0], self.pos[1])
             end = self.Grid.node(nemesis.pos[0], nemesis.pos[1])
 
             finder = AStarFinder(diagonal_movement=DiagonalMovement.always)
             path, runs = finder.find_path(start, end, self.Grid)
-            #print(self.Grid.grid_str(path=path, start=start, end=end))
-            #print(path)
 
             if len(path) > 0:
                 if self.model.grid.is_cell_empty((path[1][0], path[1][1])):
@@ -166,6 +240,12 @@ class MainAgent(Agent):
             self.Grid.cleanup()
 
     def attack_opponent(self):
+
+        """
+        Szuka w swojej okolicy przeciwników i atakuje ich
+        :return:
+        """
+
         opponents = self.scout(1)
 
         if len(opponents) > 0:
@@ -173,12 +253,25 @@ class MainAgent(Agent):
             other.hurt_me(self.get_dmg())
 
     def hurt_me(self, dmg):
+
+        """
+        Zadaje obrażenia agentowi
+        :param dmg: ilośc obrażeń
+        :return:
+        """
+
         hp = self.get_hp()
         hp -= dmg
         self.set_hp(hp)
         self.check_dead()
 
     def step(self):
+
+        """
+        Co ma robić podczas wywołania przez scheduler modelu
+        :return:
+        """
+
         neighbors = self.scout(1)
 
         if len(neighbors) < 1 & self.model.timer:
@@ -187,12 +280,28 @@ class MainAgent(Agent):
             self.attack_opponent()
 
     def check_dead(self):
+
+        """
+        Sprawdza czy agent jest martwy,
+        Jak jest to usuwa go z modelu
+        :return:
+        """
+
         if self.get_hp() <= 0:
             self.model.grid.remove_agent(self)
             self.model.schedule.remove(self)
 
 
 class Infantry(MainAgent):
+
+    """
+    Klasa dizedzicząca po głównym agencie
+
+    Arg:
+    id (int): unikalny id agenta
+    model : model w którym agent będzie działać
+    """
+
     def __init__(self, id, model):
         super().__init__(id, model)
         self.type = 'I'
@@ -201,13 +310,25 @@ class Infantry(MainAgent):
 
 
 class Cavalry(MainAgent):
+
+    """
+    Klasa dizedzicząca po głównym agencie
+
+    Arg:
+    id (int): unikalny id agenta
+    model : model w którym agent będzie działać
+    """
+
     def __init__(self, id, model):
         super().__init__(id, model)
         self.type = 'C'
 
     def step(self):
+        """
+        Do zwykłego stepa różni sie tym że wykonuje akcję co wywołanie a nie jak standardowy co 2
+        :return:
+        """
         neighbors = self.scout(1)
-
         if len(neighbors) < 1:
             self.move()
         else:
@@ -215,17 +336,36 @@ class Cavalry(MainAgent):
 
 
 class Archers(MainAgent):
+    """
+    Klasa dizedzicząca po głównym agencie
+
+    Arg:
+    id (int): unikalny id agenta
+    model : model w którym agent będzie działać
+    """
     def __init__(self, id, model):
         super().__init__(id, model)
         self.type = 'A'
 
     def attack_opponent(self):
+
+        """
+        Różni się tylko tym że ma większy zasięg sprawdzania przeciwników
+        :return:
+        """
+
         opponents = self.scout(2)
         if len(opponents) > 0:
             other = self.random.choice(opponents)
             other.hurt_me(self.get_dmg())
 
     def step(self):
+
+        """
+        Różni się tylko tym że ma większy zasięg sprawdzania przeciwników
+        :return:
+        """
+
         neighbors = self.scout(2)
 
         if len(neighbors) < 1 & self.model.timer:
@@ -235,10 +375,28 @@ class Archers(MainAgent):
 
 
 class Rock(MainAgent):
+
+    """
+    Klasa dizedzicząca po głównym agencie
+
+    Arg:
+    id (int): unikalny id agenta
+    model : model w którym agent będzie działać
+    """
+
     def __init__(self, id, model):
         super().__init__(id, model)
         self.color = 'black'
         self.type = 'R'
 
     def step(self):
+
+        """
+        Skała,
+        Nic
+        Nie
+        Robi
+        :return:
+        """
+
         pass

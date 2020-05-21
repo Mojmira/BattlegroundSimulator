@@ -38,3 +38,5 @@
 17,14,I,red
 18,14,I,red
 19,14,I,red
+10,10,R,black
+11,10,R,black

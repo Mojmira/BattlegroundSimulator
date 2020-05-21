@@ -1,5 +1,9 @@
 import numpy as np
-
+"""
+Data.py
+================================
+Czytanie danych z pliku do listy
+"""
 mylist = []
 with open('army.txt', "r") as fp:
     for i in fp.readlines():
