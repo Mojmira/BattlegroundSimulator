@@ -43,10 +43,11 @@ def agent_portrayal(agent):
     return portrayal
 
 
-grid = CanvasGrid(agent_portrayal, 20, 20, 500, 500)
-server = ModularServer(Battlefield,
-                       [grid],
-                       "Draw Model",
-                       {"width": 20, "height": 20})
-server.port = 8521  # The default
-server.launch()
+def StartSimulation():
+    grid = CanvasGrid(agent_portrayal, 20, 20, 500, 500)
+    server = ModularServer(Battlefield,
+                           [grid],
+                           "Draw Model",
+                           {"width": 20, "height": 20})
+    server.port = 8521  # The default
+    server.launch()

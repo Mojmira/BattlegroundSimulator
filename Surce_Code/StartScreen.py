@@ -1,6 +1,8 @@
 import pygame
 import math
 from ArmyCreation import *
+from ModelVisualization import *
+import time
 
 """
 StartScreen.py
@@ -311,5 +313,7 @@ while not finished:
 "Czyszczenie pliku i wczytywanie do niego nowych danych"
 clear_file()
 from_start_menu(getString())
-print("quitting...")
+print("closing window...")
 pygame.quit()
+print("starting simulation...")
+StartSimulation()
