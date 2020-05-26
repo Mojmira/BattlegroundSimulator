@@ -33,6 +33,7 @@ class Battlefield(Model):
         self.timer = True
         self.running = True
         self.spawn_from_file()
+        print(self.count_cost())
 
     def spawn_from_file(self):
 
@@ -70,6 +71,22 @@ class Battlefield(Model):
         else:
             self.timer = True
 
+    def count_cost(self):
+        """
+        Funkcja do liczenia kosztów armii
+        :return: zwraca tablice krotek (koszt,kolor)
+        """
+        costs = []
+        temp = [0, '#ff0000', 0, '#00aab2']
+        for a in self.schedule.agents:
+            if a.color == "#ff0000":
+                temp[0] += a.cost
+            elif a.color == "#00aab2":
+                temp[2] += a.cost
+        costs.append((temp[0], temp[1]))
+        costs.append((temp[2], temp[3]))
+        return costs
+
 
 class MainAgent(Agent):
 
@@ -86,6 +103,7 @@ class MainAgent(Agent):
         self.pos = None
         self.health = 100
         self.attack = 10
+        self.cost = 0
         self.model = model
         self.color = "red"
         self.type = 'I'
@@ -120,6 +138,13 @@ class MainAgent(Agent):
         """
 
         return self.pos
+
+    def get_cost(self):
+        """
+        Getter kosztu
+        :return: zwraca koszt
+        """
+        return self.cost
 
     def get_dmg(self):
 
@@ -305,6 +330,9 @@ class Infantry(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
         self.type = 'I'
+        self.health = 120
+        self.attack = 10
+        self.cost = 40
 
     # Na nich się bazowałem robiąc główną klasę więc nie ma co na razie zmieniać XD
 
@@ -322,6 +350,9 @@ class Cavalry(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
         self.type = 'C'
+        self.health = 200
+        self.attack = 20
+        self.cost = 100
 
     def step(self):
         """
@@ -346,6 +377,9 @@ class Archers(MainAgent):
     def __init__(self, id, model):
         super().__init__(id, model)
         self.type = 'A'
+        self.health = 70
+        self.attack = 30
+        self.cost = 50
 
     def attack_opponent(self):
 

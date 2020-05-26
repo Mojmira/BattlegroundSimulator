@@ -1,5 +1,6 @@
 import pygame
 import math
+from ArmyCreation import *
 
 """
 StartScreen.py
@@ -121,7 +122,6 @@ pygame.display.set_caption("Battleground Simulator")
 clock = pygame.time.Clock()
 displayWindow.fill(pygame.Color("white"))
 
-
 "Zainicjowanie przyciskow menu:"
 infantryRed = GUIButton(menuX + 20, 20, menuWidth, menuWidth, red, "I")
 infantryBlue = GUIButton(menuX + 40 + menuWidth,
@@ -178,6 +178,7 @@ currentType = "None"
 
 
 def drawGrid(number):
+    # TODO KOM
     blockSize = min(displayHeight, displayWidth) / number
     for x in range(number):
         for y in range(number):
@@ -247,8 +248,6 @@ def getString():
 finished = False
 drawGrid(fieldSize)
 
-
-
 """
 Głowna petla
 ===============================
@@ -309,6 +308,8 @@ while not finished:
     clock.tick(30)
 
 """Gdzies tutaj bedzimy odpalali model"""
-print(getString())
+"Czyszczenie pliku i wczytywanie do niego nowych danych"
+clear_file()
+from_start_menu(getString())
 print("quitting...")
 pygame.quit()
