@@ -209,7 +209,7 @@ class MainAgent(Agent):
         )
         opponents = []
         for a in field:
-            if a.get_color() == self.get_color() or a.get_color() == 'black':
+            if a.get_color() == self.get_color() or a.get_color() == '#000000':
                 pass
             else:
                 opponents.append(a)
