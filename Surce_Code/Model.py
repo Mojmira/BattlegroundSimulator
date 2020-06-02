@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
+from FileManagement import *
 
 from Data import *
 
@@ -15,6 +16,7 @@ Model.py
 Tutaj znajduje się cały model 
 """
 
+
 class Battlefield(Model):
     """
     Główna klasa modelu w której wszystko sie dzieje
@@ -23,6 +25,7 @@ class Battlefield(Model):
     width (int): szerokość planszy
     height (int): wysokość planszy
     """
+
     def __init__(self, width, height):
         super().__init__()
 
@@ -36,13 +39,13 @@ class Battlefield(Model):
         print(self.count_cost())
 
     def spawn_from_file(self):
-
+        units = read_from_file()
         """
         Wkłada jednostki z listy na planszę
         :return:
         """
 
-        for element in mylist:
+        for element in units:
             if element[2] == 'I':
                 a = Infantry(self.current_id, self)
             elif element[2] == 'A':
@@ -89,7 +92,6 @@ class Battlefield(Model):
 
 
 class MainAgent(Agent):
-
     """
     Klasa główna z której dziedziczą potem poszczególne typy jednostek
 
@@ -238,7 +240,6 @@ class MainAgent(Agent):
         :return:
         """
 
-
         others = self.scout(9)
 
         if len(others) < 1:
@@ -318,7 +319,6 @@ class MainAgent(Agent):
 
 
 class Infantry(MainAgent):
-
     """
     Klasa dizedzicząca po głównym agencie
 
@@ -338,7 +338,6 @@ class Infantry(MainAgent):
 
 
 class Cavalry(MainAgent):
-
     """
     Klasa dizedzicząca po głównym agencie
 
@@ -374,6 +373,7 @@ class Archers(MainAgent):
     id (int): unikalny id agenta
     model : model w którym agent będzie działać
     """
+
     def __init__(self, id, model):
         super().__init__(id, model)
         self.type = 'A'
@@ -409,7 +409,6 @@ class Archers(MainAgent):
 
 
 class Rock(MainAgent):
-
     """
     Klasa dizedzicząca po głównym agencie
 
@@ -424,7 +423,6 @@ class Rock(MainAgent):
         self.type = 'R'
 
     def step(self):
-
         """
         Skała,
         Nic

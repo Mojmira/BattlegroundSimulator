@@ -1,7 +1,9 @@
+import numpy as np
+
 """
-ArmyCreation.py
+FileManagement.py
 ================================
-Zapisywanie danych do pliku
+Plik z funkcjami zażądzającymi army.txt
 """
 
 
@@ -39,3 +41,17 @@ def from_start_menu(string):
     """
     with open('army.txt', 'a') as file:
         file.writelines(string)
+        file.close()
+
+
+def read_from_file():
+    """
+    Czyta jednostki z pliku
+    :return: zwraca listę krotek z jednostkami
+    """
+    mylist = []
+    with open('army.txt', "r") as fp:
+        for i in fp.readlines():
+            tmp = i.split(',')
+            mylist.append((int(tmp[0]), int(tmp[1]), tmp[2].strip(), tmp[3].strip()))
+    return mylist
