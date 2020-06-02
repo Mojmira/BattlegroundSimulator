@@ -7,8 +7,8 @@ from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
 from FileManagement import *
-
-from Data import *
+import random
+from FileManagement import *
 
 """
 Model.py
@@ -56,6 +56,7 @@ class Battlefield(Model):
                 a = Rock(self.current_id, self)
             self.next_id()
             a.set_color(element[3])
+            a.timer = random.choice([True, False])
             self.schedule.add(a)
 
             if self.grid.is_cell_empty((element[0], element[1])):
@@ -105,10 +106,12 @@ class MainAgent(Agent):
         self.pos = None
         self.health = 100
         self.attack = 10
+        self.defence = 0.25
         self.cost = 0
         self.model = model
         self.color = "red"
         self.type = 'I'
+        self.timer = True
         self.help_grid = []
         self.Grid = Grid(matrix=self.help_grid)
 
@@ -230,6 +233,7 @@ class MainAgent(Agent):
             n
         )
         return fields_around
+    #def advanced_scout(self,pos):
 
     def move(self):
 
@@ -240,7 +244,7 @@ class MainAgent(Agent):
         :return:
         """
 
-        others = self.scout(9)
+        others = self.scout(18)
 
         if len(others) < 1:
             self.model.grid.move_agent(
@@ -285,11 +289,12 @@ class MainAgent(Agent):
         :param dmg: ilośc obrażeń
         :return:
         """
-
-        hp = self.get_hp()
-        hp -= dmg
-        self.set_hp(hp)
-        self.check_dead()
+        hit = random.randint(1, 100)/100
+        if hit > self.defence:
+            hp = self.get_hp()
+            hp -= dmg
+            self.set_hp(hp)
+            self.check_dead()
 
     def step(self):
 
@@ -300,10 +305,12 @@ class MainAgent(Agent):
 
         neighbors = self.scout(1)
 
-        if len(neighbors) < 1 & self.model.timer:
+        if len(neighbors) < 1 & self.timer:
             self.move()
+            self.timer = not self.timer
         else:
             self.attack_opponent()
+            self.timer = not self.timer
 
     def check_dead(self):
 
@@ -332,6 +339,7 @@ class Infantry(MainAgent):
         self.type = 'I'
         self.health = 120
         self.attack = 10
+        self.defence = 0.25
         self.cost = 40
 
     # Na nich się bazowałem robiąc główną klasę więc nie ma co na razie zmieniać XD
@@ -351,7 +359,8 @@ class Cavalry(MainAgent):
         self.type = 'C'
         self.health = 200
         self.attack = 20
-        self.cost = 100
+        self.defence = 0.40
+        self.cost = 120
 
     def step(self):
         """
@@ -379,7 +388,8 @@ class Archers(MainAgent):
         self.type = 'A'
         self.health = 70
         self.attack = 30
-        self.cost = 50
+        self.defence = 0.15
+        self.cost = 60
 
     def attack_opponent(self):
 
@@ -402,10 +412,12 @@ class Archers(MainAgent):
 
         neighbors = self.scout(2)
 
-        if len(neighbors) < 1 & self.model.timer:
+        if len(neighbors) < 1 & self.timer:
             self.move()
+            self.timer = not self.timer
         else:
             self.attack_opponent()
+            self.timer = not self.timer
 
 
 class Rock(MainAgent):
