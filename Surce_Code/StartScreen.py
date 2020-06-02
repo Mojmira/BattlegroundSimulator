@@ -104,7 +104,7 @@ Duzo zmiennych, ktore niekoniecznie powinny byc w tym miejscu
 "Wymiary"
 displayWidth = 800
 displayHeight = 600
-fieldSize = 20  # liczba kratek
+fieldSize = 10  # liczba kratek
 menuWidth = 600 / 20
 menuX = min(displayWidth, displayHeight)
 
@@ -166,9 +166,14 @@ startButton = GUIButton(menuX + 20 + menuWidth,
                         3 * menuWidth,
                         menuWidth,
                         green, "Start")
+prevButton = GUIButton(menuX + 20 + menuWidth,
+                       20 + 40 + 13 * menuWidth,
+                       3 * menuWidth,
+                       menuWidth,
+                       grey, "prev")
 "Listy z przyciskami"
 menuButtons = [infantryRed, infantryBlue, archerRed, archerBlue, cavalryRed, cavalryBlue, barrier]
-extraButtons = [deleteButton, startButton]
+extraButtons = [deleteButton, startButton, prevButton]
 "Slownik na jednostki"
 Units = {}
 
@@ -237,7 +242,7 @@ def getString():
     for (x, y), unit in Units.items():
         line += str(x)
         line += ","
-        line += str(y)
+        line += str(fieldSize - 1 - y)
         line += ","
         line += unit.text
         line += ",#"
@@ -247,6 +252,7 @@ def getString():
     return line
 
 
+newFile = True
 finished = False
 drawGrid(fieldSize)
 
@@ -283,8 +289,12 @@ while not finished:
                                 chosenButton = button
                                 button.chooseButton()
                                 break
-                            else:
+                            elif button.text == "Start":
                                 finished = True  # start main program
+                            else:
+                                newFile = False
+                                finished = True
+
             else:
                 if mode == "Add":
                     addUnit(math.floor(mouseX / (menuX / fieldSize)),
@@ -311,9 +321,10 @@ while not finished:
 
 """Gdzies tutaj bedzimy odpalali model"""
 "Czyszczenie pliku i wczytywanie do niego nowych danych"
-clear_file()
-from_start_menu(getString())
+if newFile:
+    clear_file()
+    from_start_menu(getString())
 print("closing window...")
 pygame.quit()
 print("starting simulation...")
-StartSimulation()
+StartSimulation(fieldSize)

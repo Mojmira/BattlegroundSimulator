@@ -6,13 +6,12 @@ from Model import Battlefield
 
 def agent_portrayal(agent):
     if agent.type == 'I':
-        portrayal = {"Shape": "circle",
-                     "Color": agent.color,
-                     "Filled": "true",
+        portrayal = {"Shape": "infantry_red.png",
                      "Layer": 0,
-                     "r": 0.5,
                      "text": agent.get_hp(),
-                     "text_color": "black"}
+                     "text_color": "white"}
+        if agent.color == "#00aab2":
+            portrayal["Shape"] = "infantry_blue.png"
     elif agent.type == 'C':
         portrayal = {"Shape": "rect",
                      "Color": agent.color,
@@ -43,11 +42,11 @@ def agent_portrayal(agent):
     return portrayal
 
 
-def StartSimulation():
-    grid = CanvasGrid(agent_portrayal, 20, 20, 500, 500)
+def StartSimulation(fieldSize):
+    grid = CanvasGrid(agent_portrayal, fieldSize, fieldSize, 500, 500)
     server = ModularServer(Battlefield,
                            [grid],
                            "Draw Model",
-                           {"width": 20, "height": 20})
+                           {"width": fieldSize, "height": fieldSize})
     server.port = 8521  # The default
     server.launch()
