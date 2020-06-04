@@ -33,10 +33,8 @@ class Battlefield(Model):
         self.height = height
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
-        self.timer = True
         self.running = True
         self.spawn_from_file()
-        print(self.count_cost())
 
     def spawn_from_file(self):
         units = read_from_file()
@@ -70,10 +68,7 @@ class Battlefield(Model):
         :return:
         """
         self.schedule.step()
-        if self.timer:
-            self.timer = False
-        else:
-            self.timer = True
+        self.is_simulation_over()
 
     def count_cost(self):
         """
@@ -91,6 +86,10 @@ class Battlefield(Model):
         costs.append((temp[2], temp[3]))
         return costs
 
+    def is_simulation_over(self):
+        temp = self.count_cost()
+        if temp[0][0] == 0 or temp[1][0] == 0:
+            self.running = False
 
 class MainAgent(Agent):
     """
