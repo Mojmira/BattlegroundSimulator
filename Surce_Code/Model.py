@@ -87,9 +87,45 @@ class Battlefield(Model):
         return costs
 
     def is_simulation_over(self):
+        """
+        Sprawdza czy symulacja sie zakończyła
+        :return:
+        """
         temp = self.count_cost()
         if temp[0][0] == 0 or temp[1][0] == 0:
             self.running = False
+
+    def who_won(self):
+        """
+        Sprawdza kto wygrał
+        :return: zwraca 1 kiedy wygrali niebiescy i 0 jak wygralki czerwoni
+        """
+        temp = self.count_cost()
+        if temp[0][0] > 0:
+            return 0
+        else:
+            return 1
+
+    def run_n_sim(self, n):
+        """
+        Funkcja do przeprowadzania dużej ilości symulacji bez potrzeby oglądania ich
+        :param n: Ilość symulacji
+        :return:
+        """
+        wins = [[], []]
+        for i in range(n):
+            model = Battlefield(self.width, self.height)
+            while model.running:
+                model.step()
+            if model.who_won() == 0:
+                wins[0].append(0)
+            else:
+                wins[1].append(1)
+
+        plt.hist(wins, bins=[0, 1, 2], histtype='bar', align='mid', orientation='vertical', label="WINS",
+                 color=["#ff0000", "#00aab2"])
+        plt.show()
+
 
 class MainAgent(Agent):
     """
@@ -232,7 +268,8 @@ class MainAgent(Agent):
             n
         )
         return fields_around
-    #def advanced_scout(self,pos):
+
+    # def advanced_scout(self,pos):
 
     def move(self):
 
@@ -288,7 +325,7 @@ class MainAgent(Agent):
         :param dmg: ilośc obrażeń
         :return:
         """
-        hit = random.randint(1, 100)/100
+        hit = random.randint(1, 100) / 100
         if hit > self.defence:
             hp = self.get_hp()
             hp -= dmg
