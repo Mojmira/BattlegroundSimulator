@@ -13,24 +13,19 @@ def agent_portrayal(agent):
         if agent.color == "#00aab2":
             portrayal["Shape"] = "infantry_blue.png"
     elif agent.type == 'C':
-        portrayal = {"Shape": "rect",
-                     "Color": agent.color,
-                     "Filled": "true",
+        portrayal = {"Shape": "cavalry_red.png",
                      "Layer": 0,
-                     "w": 0.5,
-                     "h": 0.5,
                      "text": agent.get_hp(),
-                     "text_color": "black"}
+                     "text_color": "white"}
+        if agent.color == "#00aab2":
+            portrayal["Shape"] = "cavalry_blue.png"
     elif agent.type == 'A':
-        portrayal = {"Shape": "arrowHead",
-                     "Color": agent.color,
-                     "Filled": "true",
+        portrayal = {"Shape": "archer_red.png",
                      "Layer": 0,
-                     "scale": 0.5,
-                     "heading_x": 0,
-                     "heading_y": 1,
                      "text": agent.get_hp(),
-                     "text_color": "black"}
+                     "text_color": "white"}
+        if agent.color == "#00aab2":
+            portrayal["Shape"] = "archer_blue.png"
     elif agent.type == 'R':
         portrayal = {"Shape": "rect",
                      "Color": agent.color,
