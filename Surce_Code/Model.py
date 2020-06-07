@@ -106,26 +106,6 @@ class Battlefield(Model):
         else:
             return 1
 
-    def run_n_sim(self, n):
-        """
-        Funkcja do przeprowadzania dużej ilości symulacji bez potrzeby oglądania ich
-        :param n: Ilość symulacji
-        :return:
-        """
-        wins = [[], []]
-        for i in range(n):
-            model = Battlefield(self.width, self.height)
-            while model.running:
-                model.step()
-            if model.who_won() == 0:
-                wins[0].append(0)
-            else:
-                wins[1].append(1)
-
-        plt.hist(wins, bins=[0, 1, 2], histtype='bar', align='mid', orientation='vertical', label="WINS",
-                 color=["#ff0000", "#00aab2"])
-        plt.show()
-
 
 class MainAgent(Agent):
     """
@@ -480,3 +460,24 @@ class Rock(MainAgent):
         """
 
         pass
+
+
+def run_n_sim(n, width, height):
+    """
+    Funkcja do przeprowadzania dużej ilości symulacji bez potrzeby oglądania ich
+    :param n: Ilość symulacji
+    :return:
+    """
+    wins = [[], []]
+    for i in range(n):
+        model = Battlefield(width, height)
+        while model.running:
+            model.step()
+        if model.who_won() == 0:
+            wins[0].append(0)
+        else:
+            wins[1].append(1)
+
+    plt.hist(wins, bins=[0, 1, 2], histtype='bar', align='mid', orientation='vertical', label="WINS",
+             color=["#ff0000", "#00aab2"])
+    plt.show()
