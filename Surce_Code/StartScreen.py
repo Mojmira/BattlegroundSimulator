@@ -322,8 +322,8 @@ while not finished:
 """Gdzies tutaj bedzimy odpalali model"""
 "Czyszczenie pliku i wczytywanie do niego nowych danych"
 if newFile:
-    clear_file()
-    from_start_menu(getString())
+    clear_file('Data/army.txt')
+    to_file(getString(), 'Data/army.txt')
 print("closing window...")
 pygame.quit()
 print("starting simulation...")

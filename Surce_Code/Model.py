@@ -9,6 +9,7 @@ from pathfinding.finder.a_star import AStarFinder
 from FileManagement import *
 import random
 from FileManagement import *
+import os
 
 """
 Model.py
@@ -35,9 +36,11 @@ class Battlefield(Model):
         self.schedule = RandomActivation(self)
         self.running = True
         self.spawn_from_file()
+        self.initial_red_count = self.count_units("#ff0000")
+        self.initial_blue_count = self.count_units("#00aab2")
 
     def spawn_from_file(self):
-        units = read_from_file()
+        units = read_from_file('Data/army.txt')
         """
         Wkłada jednostki z listy na planszę
         :return:
@@ -86,6 +89,18 @@ class Battlefield(Model):
         costs.append((temp[2], temp[3]))
         return costs
 
+    def count_units(self, color):
+        """
+        Zlicza ilość jednostek danego koloru
+        :param color: Kolor jednostek jakie ma liczyć
+        :return: zwraca ilość jednostek
+        """
+        counter = 0
+        for a in self.schedule.agents:
+            if a.color == color:
+                counter += 1
+        return counter
+
     def is_simulation_over(self):
         """
         Sprawdza czy symulacja sie zakończyła
@@ -94,6 +109,29 @@ class Battlefield(Model):
         temp = self.count_cost()
         if temp[0][0] == 0 or temp[1][0] == 0:
             self.running = False
+            to_file(self.write_results(), "Data/results"+str(self.width)+"x"+str(self.height)+".txt")
+
+    def write_results(self):
+        string = ""
+        if self.who_won() == 1:
+            string += "Blue won with "
+            string += str(self.count_units("#00aab2"))
+            string += " units left."
+            string += "  Starting with || Blue units "
+            string += str(self.initial_blue_count)
+            string += " - "
+            string += str(self.initial_red_count)
+            string += " Red units"
+        else:
+            string += "Red won with "
+            string += str(self.count_units("#ff0000"))
+            string += " units left"
+            string += "  Starting with || Blue units "
+            string += str(self.initial_blue_count)
+            string += " - "
+            string += str(self.initial_red_count)
+            string += " Red units"
+        return string
 
     def who_won(self):
         """
