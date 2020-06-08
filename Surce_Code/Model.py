@@ -121,7 +121,7 @@ class Battlefield(Model):
             string += str(self.initial_blue_count)
             string += " - "
             string += str(self.initial_red_count)
-            string += " Red units"
+            string += " Red units\n"
         else:
             string += "Red won with "
             string += str(self.count_units("#ff0000"))
@@ -130,7 +130,7 @@ class Battlefield(Model):
             string += str(self.initial_blue_count)
             string += " - "
             string += str(self.initial_red_count)
-            string += " Red units"
+            string += " Red units\n"
         return string
 
     def who_won(self):
