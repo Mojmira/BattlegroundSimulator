@@ -2,7 +2,9 @@ from mesa import Model
 from mesa import Agent
 from mesa.space import MultiGrid
 from mesa.time import RandomActivation
+from mesa.datacollection import DataCollector
 import matplotlib.pyplot as plt
+import numpy as np
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.a_star import AStarFinder
@@ -10,6 +12,18 @@ from FileManagement import *
 import random
 from FileManagement import *
 import os
+
+
+def compute_cost_red(model):
+    model.survived_steps_red += model.count_units('#ff0000')
+    print(model.survived_steps_red)
+    return model.survived_steps_red / model.starting_cost_red
+
+
+def compute_cost_blue(model):
+    model.survived_steps_blue += model.count_units('#00aab2')
+    return model.survived_steps_blue / model.starting_cost_blue
+
 
 """
 Model.py
@@ -32,12 +46,21 @@ class Battlefield(Model):
 
         self.width = width
         self.height = height
+        self.survived_steps_blue = 0
+        self.survived_steps_red = 0
         self.grid = MultiGrid(width, height, False)
         self.schedule = RandomActivation(self)
         self.running = True
         self.spawn_from_file()
         self.initial_red_count = self.count_units("#ff0000")
         self.initial_blue_count = self.count_units("#00aab2")
+        self.tmp = self.count_cost()
+        self.starting_cost_blue = self.tmp[1][0]
+        self.starting_cost_red = self.tmp[0][0]
+
+        self.datacollector = DataCollector(
+            model_reporters={"Suma przeżytych rund każdej jednostki do kosztu całej armii - czerwoni": compute_cost_red,
+                             "Suma przeżytych rund każdej jednostki do kosztu całej armii - niebiescy": compute_cost_blue})
 
     def spawn_from_file(self):
         units = read_from_file('Data/army.txt')
@@ -72,6 +95,7 @@ class Battlefield(Model):
         """
         self.schedule.step()
         self.is_simulation_over()
+        self.datacollector.collect(self)
 
     def count_cost(self):
         """
@@ -109,7 +133,7 @@ class Battlefield(Model):
         temp = self.count_cost()
         if temp[0][0] == 0 or temp[1][0] == 0:
             self.running = False
-            to_file(self.write_results(), "Data/results"+str(self.width)+"x"+str(self.height)+".txt")
+            to_file(self.write_results(), "Data/results" + str(self.width) + "x" + str(self.height) + ".txt")
 
     def write_results(self):
         string = ""
@@ -514,8 +538,13 @@ def run_n_sim(n, width, height):
         if model.who_won() == 0:
             wins[0].append(0)
         else:
-            wins[1].append(1)
+            wins[1].append(2)
 
-    plt.hist(wins, bins=[0, 1, 2], histtype='bar', align='mid', orientation='vertical', label="WINS",
+    bars = ("red", "blue")
+    y_pos = np.arange(0.5, len(bars))
+
+    plt.hist(wins, bins=[0, 2], histtype='bar', align='mid', orientation='vertical', label="WINS",
              color=["#ff0000", "#00aab2"])
+    plt.xticks(y_pos, bars)
+
     plt.show()

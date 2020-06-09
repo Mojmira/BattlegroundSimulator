@@ -2,6 +2,7 @@ import pygame
 import math
 from FileManagement import *
 from ModelVisualization import *
+from Model import  run_n_sim
 import time
 
 """
@@ -171,9 +172,14 @@ prevButton = GUIButton(menuX + 20 + menuWidth,
                        3 * menuWidth,
                        menuWidth,
                        grey, "prev")
+runButton = GUIButton(menuX + 20 + menuWidth,
+                       20 + 40 + 11 * menuWidth,
+                       3 * menuWidth,
+                       menuWidth,
+                       grey, "x100")
 "Listy z przyciskami"
 menuButtons = [infantryRed, infantryBlue, archerRed, archerBlue, cavalryRed, cavalryBlue, barrier]
-extraButtons = [deleteButton, startButton, prevButton]
+extraButtons = [deleteButton, startButton, prevButton, runButton]
 "Slownik na jednostki"
 Units = {}
 
@@ -185,7 +191,10 @@ currentType = "None"
 
 
 def drawGrid(number):
-    # TODO KOM
+    """"
+    Wygodne rysowanie siatki na ekranie
+    :param number: rozmiar siatki
+    """
     blockSize = min(displayHeight, displayWidth) / number
     for x in range(number):
         for y in range(number):
@@ -254,6 +263,7 @@ def getString():
 
 newFile = True
 finished = False
+run100 = False
 drawGrid(fieldSize)
 
 """
@@ -291,8 +301,11 @@ while not finished:
                                 break
                             elif button.text == "Start":
                                 finished = True  # start main program
-                            else:
+                            elif button.text == "prev":
                                 newFile = False
+                                finished = True
+                            else:
+                                run100 = True
                                 finished = True
 
             else:
@@ -327,4 +340,7 @@ if newFile:
 print("closing window...")
 pygame.quit()
 print("starting simulation...")
-StartSimulation(fieldSize)
+if run100:
+    run_n_sim(100, fieldSize, fieldSize)
+else:
+    StartSimulation(fieldSize)

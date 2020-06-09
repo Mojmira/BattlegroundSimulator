@@ -1,46 +1,43 @@
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
+from mesa.visualization.modules import ChartModule
 
+import Model
 from Model import Battlefield
 
 
 def agent_portrayal(agent):
     if agent.type == 'I':
         portrayal = {"Shape": "infantry_red.png",
-                     "Layer": 0,
-                     "text": agent.get_hp(),
-                     "text_color": "white"}
+                     "Layer": 0}
         if agent.color == "#00aab2":
             portrayal["Shape"] = "infantry_blue.png"
     elif agent.type == 'C':
         portrayal = {"Shape": "cavalry_red.png",
-                     "Layer": 0,
-                     "text": agent.get_hp(),
-                     "text_color": "white"}
+                     "Layer": 0}
         if agent.color == "#00aab2":
             portrayal["Shape"] = "cavalry_blue.png"
     elif agent.type == 'A':
         portrayal = {"Shape": "archer_red.png",
-                     "Layer": 0,
-                     "text": agent.get_hp(),
-                     "text_color": "white"}
+                     "Layer": 0}
         if agent.color == "#00aab2":
             portrayal["Shape"] = "archer_blue.png"
     elif agent.type == 'R':
-        portrayal = {"Shape": "rect",
-                     "Color": agent.color,
-                     "Filled": "true",
-                     "Layer": 0,
-                     "w": 0.5,
-                     "h": 0.5}
+        portrayal = {"Shape": "obstacle.png",
+                     "Layer": 0}
 
     return portrayal
 
 
 def StartSimulation(fieldSize):
     grid = CanvasGrid(agent_portrayal, fieldSize, fieldSize, 500, 500)
+
+    chart = ChartModule([{"Label": "Suma przeżytych rund każdej jednostki do kosztu całej armii - czerwoni", "Color": "Red"},
+                         {"Label": "Suma przeżytych rund każdej jednostki do kosztu całej armii - niebiescy", "Color": "Blue"}],
+                        data_collector_name='datacollector')
+
     server = ModularServer(Battlefield,
-                           [grid],
+                           [grid, chart],
                            "Draw Model",
                            {"width": fieldSize, "height": fieldSize})
     server.port = 8521  # The default
