@@ -35,9 +35,12 @@ def StartSimulation(fieldSize):
     chart = ChartModule([{"Label": "Suma przeżytych rund każdej jednostki do kosztu całej armii - czerwoni", "Color": "Red"},
                          {"Label": "Suma przeżytych rund każdej jednostki do kosztu całej armii - niebiescy", "Color": "Blue"}],
                         data_collector_name='datacollector')
+    chart_hp = ChartModule([{"Label": "Punkty życia armii czerwonej", "Color": "Red"},
+                            {"Label": "Punkty życia armii niebieskiej", "Color": "Blue"}],
+                           data_collector_name='datacollector_health')
 
     server = ModularServer(Battlefield,
-                           [grid, chart],
+                           [grid, chart, chart_hp],
                            "Draw Model",
                            {"width": fieldSize, "height": fieldSize})
     server.port = 8521  # The default

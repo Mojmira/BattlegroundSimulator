@@ -14,6 +14,10 @@ from FileManagement import *
 import os
 
 
+"""
+Funkcje dla data collectora
+"""
+
 def compute_cost_red(model):
     model.survived_steps_red += model.count_units('#ff0000')
     print(model.survived_steps_red)
@@ -24,6 +28,22 @@ def compute_cost_blue(model):
     model.survived_steps_blue += model.count_units('#00aab2')
     return model.survived_steps_blue / model.starting_cost_blue
 
+def compute_health_red(model):
+    army_health = 0
+    for agent in model.schedule.agents:
+        if agent.get_color() == '#ff0000':
+            army_health += agent.get_hp()
+
+    return army_health
+
+
+def compute_health_blue(model):
+    army_health = 0
+    for agent in model.schedule.agents:
+        if agent.get_color() == '#00aab2':
+            army_health += agent.get_hp()
+
+    return army_health
 
 """
 Model.py
@@ -62,6 +82,10 @@ class Battlefield(Model):
             model_reporters={"Suma przeżytych rund każdej jednostki do kosztu całej armii - czerwoni": compute_cost_red,
                              "Suma przeżytych rund każdej jednostki do kosztu całej armii - niebiescy": compute_cost_blue})
 
+        self.datacollector_health = DataCollector(
+            model_reporters={"Punkty życia armii czerwonej": compute_health_red,
+                             "Punkty życia armii niebieskiej": compute_health_blue})
+
     def spawn_from_file(self):
         units = read_from_file('Data/army.txt')
         """
@@ -96,6 +120,7 @@ class Battlefield(Model):
         self.schedule.step()
         self.is_simulation_over()
         self.datacollector.collect(self)
+        self.datacollector_health.collect(self)
 
     def count_cost(self):
         """
